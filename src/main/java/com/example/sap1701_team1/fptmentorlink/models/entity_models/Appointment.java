@@ -1,0 +1,41 @@
+package com.example.sap1701_team1.fptmentorlink.models.entity_models;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "`appointment`")
+public class Appointment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private Date date;
+
+    //enum
+    //private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "mentor_id")
+    private Mentor mentor;
+
+    @OneToOne
+    @JoinColumn(name = "mentor_availability_id")
+    private MentorAvailability mentorAvailability;
+
+    @OneToMany(mappedBy = "appointment")
+    private List<Student> studentList;
+
+    @OneToMany(mappedBy = "appointment")
+    private List<Notification> notificationList;
+}
