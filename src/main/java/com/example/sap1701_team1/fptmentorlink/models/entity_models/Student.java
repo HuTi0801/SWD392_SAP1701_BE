@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,9 +24,8 @@ public class Student {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne
-    @JoinColumn(name = "appoinment_id")
-    private Appointment appointment;
+    @OneToMany(mappedBy = "student")
+    private List<Appointment> appointmentList;
 
     @ManyToOne
     @JoinColumn(name = "group_id")

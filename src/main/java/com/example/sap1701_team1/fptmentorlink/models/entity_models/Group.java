@@ -19,7 +19,11 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private boolean isLeader;
+    private String name;
+
+    @OneToOne
+    @JoinColumn(name = "leader_id", unique = true) // Trỏ đến một Student duy nhất
+    private Student leader;
 
     @OneToMany(mappedBy = "group")
     private List<Chat> chatList;

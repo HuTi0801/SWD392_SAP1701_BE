@@ -22,6 +22,8 @@ public class Appointment {
 
     private Date date;
 
+    private String description;
+
     //enum
     //private String status;
 
@@ -33,8 +35,9 @@ public class Appointment {
     @JoinColumn(name = "mentor_availability_id")
     private MentorAvailability mentorAvailability;
 
-    @OneToMany(mappedBy = "appointment")
-    private List<Student> studentList;
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
 
     @OneToMany(mappedBy = "appointment")
     private List<Notification> notificationList;
