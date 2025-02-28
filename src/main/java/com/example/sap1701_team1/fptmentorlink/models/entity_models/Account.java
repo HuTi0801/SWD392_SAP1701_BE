@@ -1,12 +1,13 @@
 package com.example.sap1701_team1.fptmentorlink.models.entity_models;
 
+import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.scheduling.config.Task;
 
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -23,7 +24,11 @@ public class Account {
     private String username;
     private String password;
     private String email;
-    private String role;
+
+    @Column(name = "roles")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     private String fullname;
     private String phone;
     private boolean is_active;
@@ -36,5 +41,4 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private List<Chat> chatList;
-
 }
