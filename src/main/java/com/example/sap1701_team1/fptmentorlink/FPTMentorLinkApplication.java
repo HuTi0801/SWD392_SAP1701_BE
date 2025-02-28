@@ -1,5 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink;
 
+import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
 import com.example.sap1701_team1.fptmentorlink.repositories.*;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class FPTMentorLinkApplication {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = sdf.parse("2024-02-27 14:30:00");
 		return args -> {
-			//thêm thông tin department
+			//Thêm thông tin department
 			Department department1 = Department.builder()
 					.depName("Information Technology")
 					.build();
@@ -46,7 +47,7 @@ public class FPTMentorLinkApplication {
 			departmentRepo.save(department1);
 			departmentRepo.save(department2);
 
-			//thêm thông tin major
+			//Thêm thông tin major
 			Major major1 = Major.builder()
 					.name("Software Engineering")
 					.department(department1)
@@ -68,6 +69,7 @@ public class FPTMentorLinkApplication {
 			Account account1 = Account.builder()
 					.username("huti")
 					.password("1")
+					.role(Role.LEADER)
 					.email("huti@gmail.com")
 					.fullname("Bui Huu Tien")
 					.phone("0909330485")
@@ -76,6 +78,7 @@ public class FPTMentorLinkApplication {
 			Account account2 = Account.builder()
 					.username("nhatkhoa")
 					.password("1")
+					.role(Role.MEMBER)
 					.email("nhatkhoa@gmail.com")
 					.fullname("Tran Nguyen Nhat Khoa")
 					.phone("0909330444")
@@ -84,6 +87,7 @@ public class FPTMentorLinkApplication {
 			Account account3 = Account.builder()
 					.username("putzien")
 					.password("1")
+					.role(Role.MEMBER)
 					.email("putzien@gmail.com")
 					.fullname("Nguyen Tram Phuc Duyen")
 					.phone("0944949152")
@@ -92,6 +96,7 @@ public class FPTMentorLinkApplication {
 			Account account4 = Account.builder()
 					.username("datsung")
 					.password("1")
+					.role(Role.MEMBER)
 					.email("datsung@gmail.com")
 					.fullname("Nguyen Thanh Dat")
 					.phone("0339315466")
@@ -100,6 +105,7 @@ public class FPTMentorLinkApplication {
 			Account account5 = Account.builder()
 					.username("quinh")
 					.password("1")
+					.role(Role.MEMBER)
 					.email("quinh@gmail.com")
 					.fullname("Pham Nhu Quynh")
 					.phone("0909312345")
@@ -108,6 +114,7 @@ public class FPTMentorLinkApplication {
 			Account account6 = Account.builder()
 					.username("thao")
 					.password("1")
+					.role(Role.LECTURE)
 					.email("thao@gmail.com")
 					.fullname("Nguyen Thi Thanh Thao")
 					.phone("0909452783")
@@ -116,6 +123,7 @@ public class FPTMentorLinkApplication {
 			Account account7 = Account.builder()
 					.username("an")
 					.password("1")
+					.role(Role.MENTOR)
 					.email("an@gmail.com")
 					.fullname("Phung Nhat An")
 					.phone("0998766547")
