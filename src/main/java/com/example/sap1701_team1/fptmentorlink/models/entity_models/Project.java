@@ -1,4 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink.models.entity_models;
+import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
+import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,8 +24,9 @@ public class Project {
     private String description;
     private String document;
 
-    //enum
-    //private String status;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus projectStatus;
 
     @OneToMany(mappedBy = "project")
     private List<Checkpoint> checkpointList;

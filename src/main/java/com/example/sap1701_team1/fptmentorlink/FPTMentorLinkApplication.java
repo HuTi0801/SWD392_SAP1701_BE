@@ -1,5 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink;
 
+import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
 import com.example.sap1701_team1.fptmentorlink.repositories.*;
@@ -137,11 +138,57 @@ public class FPTMentorLinkApplication {
 			accountRepo.save(account6);
 			accountRepo.save(account7);
 
+			Account account8 = Account.builder()
+					.username("truongan")
+					.password("1")
+					.role(Role.LEADER)
+					.email("andht@gmail.com")
+					.fullname("Dao Huynh Truong An")
+					.phone("0912347658")
+					.is_active(true)
+					.build();
+			Account account9 = Account.builder()
+					.username("thinh")
+					.password("1")
+					.role(Role.MEMBER)
+					.email("thinhlp@gmail.com")
+					.fullname("Le Phuoc Thinh")
+					.phone("0334562345")
+					.is_active(true)
+					.build();
+			Account account10 = Account.builder()
+					.username("thien")
+					.password("1")
+					.role(Role.MEMBER)
+					.email("thiennt@gmail.com")
+					.fullname("Nguyen Trong Thien")
+					.phone("0774538954")
+					.is_active(true)
+					.build();
+			Account account11 = Account.builder()
+					.username("tri")
+					.password("1")
+					.role(Role.MEMBER)
+					.email("trith@gmail.com")
+					.fullname("Tran Huu Tri")
+					.phone("0339876597")
+					.is_active(true)
+					.build();
+			accountRepo.save(account8);
+			accountRepo.save(account9);
+			accountRepo.save(account10);
+			accountRepo.save(account11);
+
 			//thêm thông tin Group
 			Group group1 = Group.builder()
 					.name("3Cats")
 					.build();
 			groupRepo.save(group1);
+
+			Group group2 = Group.builder()
+					.name("Wow")
+					.build();
+			groupRepo.save(group2);
 
 			//thêm thông tin Student
 			Student student1 = Student.builder()
@@ -180,9 +227,41 @@ public class FPTMentorLinkApplication {
 			studentRepo.save(student4);
 			studentRepo.save(student5);
 
+			Student student8 = Student.builder()
+					.account(account8)
+					.major(major1)
+					.jpa(9)
+					.group(group2)
+					.build();
+			Student student9 = Student.builder()
+					.account(account9)
+					.major(major1)
+					.jpa(8)
+					.group(group2)
+					.build();
+			Student student10 = Student.builder()
+					.account(account10)
+					.major(major1)
+					.jpa(9)
+					.group(group2)
+					.build();
+			Student student11 = Student.builder()
+					.account(account11)
+					.major(major1)
+					.jpa(7)
+					.group(group2)
+					.build();
+			studentRepo.save(student8);
+			studentRepo.save(student9);
+			studentRepo.save(student10);
+			studentRepo.save(student11);
+
 			//gán student1 làm leader
 			group1.setLeader(student1);
 			groupRepo.save(group1);
+
+			group2.setLeader(student8);
+			groupRepo.save(group2);
 
 			//thêm thông tin Lecturer
 			Lecturer lecturer6 = Lecturer.builder()
@@ -217,10 +296,20 @@ public class FPTMentorLinkApplication {
 					.description("FPT MentorLink is a mentorship platform to support students at FPT University" +
 							" in their graduation projects and coursework.")
 					.document("doc.com.vn")
+					.projectStatus(ProjectStatus.PENDING)
 					.build();
 			projectRepo.save(project1);
 
-
+			Project project2 = Project.builder()
+					.lecturer(lecturer6)
+					.group(group2)
+					.topic("Pet care")
+					.description("Our pet care website connects owners with vet services, grooming, training, " +
+							"and a loving community for happier, healthier pets.")
+					.document("doc22.com.vn")
+					.projectStatus(ProjectStatus.PENDING)
+					.build();
+			projectRepo.save(project2);
 		};
 	}
 }
