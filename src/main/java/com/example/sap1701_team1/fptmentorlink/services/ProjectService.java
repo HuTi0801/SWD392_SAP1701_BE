@@ -12,4 +12,7 @@ public interface ProjectService {
 
     //Search project by team name
     Response searchProject(String projectName, ProjectStatus status);
+
+    //Approve or Reject Project
+    Response updateStatusProjectById(Integer id, ProjectStatus status);
 }

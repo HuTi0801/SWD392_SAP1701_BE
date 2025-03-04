@@ -31,4 +31,9 @@ public class ProjectController {
                                   @Parameter(required = false) @RequestParam(required = false) ProjectStatus status) {
         return projectService.searchProject(projectName, status);
     }
+
+    @PatchMapping("/update-status-project-{id}")
+    public Response updateProjectStatus(Integer id, ProjectStatus status) {
+        return projectService.updateStatusProjectById(id, status);
+    }
 }

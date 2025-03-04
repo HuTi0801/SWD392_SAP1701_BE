@@ -1,9 +1,12 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
+import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
 import com.example.sap1701_team1.fptmentorlink.mappers.ProjectMapper;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Project;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
+import com.example.sap1701_team1.fptmentorlink.repositories.NotificationRepo;
 import com.example.sap1701_team1.fptmentorlink.repositories.ProjectRepo;
 import com.example.sap1701_team1.fptmentorlink.services.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import java.util.Optional;
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepo projectRepo;
     private final ProjectMapper projectMapper;
+    private final NotificationRepo notificationRepo;
 
     //Get all project
     @Override
@@ -116,6 +120,57 @@ public class ProjectServiceImpl implements ProjectService {
             response.setSuccess(false);
             response.setMessage("Error retrieving projects: " + e.getMessage());
             response.setResult(null);
+        }
+        return response;
+    }
+
+    //Approve or reject project
+    @Override
+    public Response updateStatusProjectById(Integer id, ProjectStatus status) {
+        Response response = new Response();
+        try {
+            // Tìm Project theo ID
+            Optional<Project> optionalProject = projectRepo.findById(id);
+            if (optionalProject.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("Project not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Project project = optionalProject.get();
+
+            // Kiểm tra nếu trạng thái mới giống trạng thái cũ thì không cập nhật
+            if (project.getProjectStatus() == status) {
+                response.setSuccess(false);
+                response.setMessage("Project is already in the requested status!");
+                response.setStatusCode(400);
+                return response;
+            }
+
+            // Cập nhật trạng thái mới cho Project
+            project.setProjectStatus(status);
+            projectRepo.save(project);
+
+            // Tạo thông báo mới trong Notification
+            Notification notification = Notification.builder()
+                    .type("Project Status Update")
+                    .content("Project " + project.getTopic() + " has been " + status.name().toLowerCase())
+                    .notificationStatus(NotificationStatus.UNREAD) //Mặc định là chưa đọc
+                    .project(project) // Gán project liên quan
+                    .build();
+
+            notificationRepo.save(notification); // Lưu Notification vào DB
+
+            // Trả về Response thành công
+            response.setSuccess(true);
+            response.setMessage("Project status updated successfully!");
+            response.setStatusCode(200);
+            response.setResult(projectMapper.toProjectResponse(project)); //Trả về ProjectResponse
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error updating project status: " + e.getMessage());
+            response.setStatusCode(500);
         }
         return response;
     }
