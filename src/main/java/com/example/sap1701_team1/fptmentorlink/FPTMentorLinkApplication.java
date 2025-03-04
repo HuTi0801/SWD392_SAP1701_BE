@@ -181,12 +181,12 @@ public class FPTMentorLinkApplication {
 
 			//thêm thông tin Group
 			Group group1 = Group.builder()
-					.name("3Cats")
+					.name("3cats")
 					.build();
 			groupRepo.save(group1);
 
 			Group group2 = Group.builder()
-					.name("Wow")
+					.name("wow")
 					.build();
 			groupRepo.save(group2);
 
