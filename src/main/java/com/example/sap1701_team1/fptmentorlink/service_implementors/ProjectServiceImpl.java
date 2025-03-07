@@ -3,6 +3,7 @@ package com.example.sap1701_team1.fptmentorlink.service_implementors;
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
 import com.example.sap1701_team1.fptmentorlink.mappers.ProjectMapper;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.Group;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Project;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
@@ -152,12 +153,16 @@ public class ProjectServiceImpl implements ProjectService {
             project.setProjectStatus(status);
             projectRepo.save(project);
 
+            // Lấy Group từ Project (nếu có)
+            Group group = project.getGroup(); // Cần đảm bảo Project có Group
+
             // Tạo thông báo mới trong Notification
             Notification notification = Notification.builder()
                     .type("Project Status Update")
                     .content("Project " + project.getTopic() + " has been " + status.name().toLowerCase())
                     .notificationStatus(NotificationStatus.UNREAD) //Mặc định là chưa đọc
                     .project(project) // Gán project liên quan
+                    .group(group)
                     .build();
 
             notificationRepo.save(notification); // Lưu Notification vào DB

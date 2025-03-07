@@ -1,4 +1,4 @@
-package com.example.sap1701_team1.fptmentorlink.models.response_models;
+package com.example.sap1701_team1.fptmentorlink.models.request_models;
 
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NotificationResponse {
-    private Integer id;
+public class NotificationRequest {
     private String type;
     private String content;
     private NotificationStatus notificationStatus;
