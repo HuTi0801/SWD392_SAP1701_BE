@@ -1,5 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink;
 
+import com.example.sap1701_team1.fptmentorlink.enums.AppointmentStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
@@ -18,7 +19,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 @SpringBootApplication
 public class FPTMentorLinkApplication {
-	private final AppoinmentRepo appoinmentRepo;
+	private final AppointmentRepo appointmentRepo;
 	private final AccountRepo accountRepo;
 	private final StudentRepo studentRepo;
 	private final MentorRepo mentorRepo;
@@ -285,8 +286,18 @@ public class FPTMentorLinkApplication {
 					.student(student1)
 					.date(date)
 					.description("Report instructions")
+					.appointmentStatus(AppointmentStatus.PENDING)
 					.build();
-			appoinmentRepo.save(appointment1);
+			appointmentRepo.save(appointment1);
+
+			Appointment appointment2 = Appointment.builder()
+					.mentor(mentor7)
+					.student(student8)
+					.date(date)
+					.description("Report instructions")
+					.appointmentStatus(AppointmentStatus.PENDING)
+					.build();
+			appointmentRepo.save(appointment2);
 
 			//thêm thông tin Project
 			Project project1 = Project.builder()
