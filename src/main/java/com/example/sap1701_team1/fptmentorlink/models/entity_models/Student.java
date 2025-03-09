@@ -1,4 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink.models.entity_models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,13 +27,16 @@ public class Student {
     private Account account;
 
     @OneToMany(mappedBy = "student")
+    @JsonIgnore
     private List<Appointment> appointmentList;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
+    @JsonManagedReference
     private Group group;
 
     @ManyToOne
     @JoinColumn(name = "major_id")
+    @JsonIgnore
     private Major major;
 }

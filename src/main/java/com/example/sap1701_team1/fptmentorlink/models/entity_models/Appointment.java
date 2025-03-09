@@ -1,5 +1,7 @@
 package com.example.sap1701_team1.fptmentorlink.models.entity_models;
 
+import com.example.sap1701_team1.fptmentorlink.enums.AppointmentStatus;
+import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +26,9 @@ public class Appointment {
 
     private String description;
 
-    //enum
-    //private String status;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus appointmentStatus;
 
     @ManyToOne
     @JoinColumn(name = "mentor_id")

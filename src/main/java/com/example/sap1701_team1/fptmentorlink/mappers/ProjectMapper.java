@@ -3,7 +3,6 @@ package com.example.sap1701_team1.fptmentorlink.mappers;
 import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Project;
-import com.example.sap1701_team1.fptmentorlink.models.request_models.ProjectRequest;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.NotificationResponse;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.ProjectResponse;
 import lombok.AllArgsConstructor;
@@ -37,7 +36,8 @@ public class ProjectMapper {
                                         notification.getType(),
                                         notification.getContent(),
                                         notification.getNotificationStatus(),
-                                        notification.getId()
+                                        notification.getProject().getId(),
+                                        notification.getGroup().getId()
                                 ))
                                 .collect(Collectors.toList())
                 )
