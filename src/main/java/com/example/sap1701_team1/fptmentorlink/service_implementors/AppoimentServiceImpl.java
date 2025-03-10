@@ -18,6 +18,8 @@ import java.util.Optional;
 public class AppoimentServiceImpl implements AppointmentService {
     private final AppointmentRepo appointmentRepo;
     private final AppointmentMapper appointmentMapper;
+
+    //Get all appointment
     @Override
     public Response getAllAppointments() {
         Response response = new Response();
@@ -45,6 +47,7 @@ public class AppoimentServiceImpl implements AppointmentService {
         return response;
     }
 
+    //Get a appointment
     @Override
     public Response getAppointmentById(Integer id) {
         Response response = new Response();

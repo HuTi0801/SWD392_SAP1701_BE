@@ -8,4 +8,6 @@ public interface AppointmentService {
 
     //Get a appointment
     Response getAppointmentById(Integer id);
+
+    //Update status
 }

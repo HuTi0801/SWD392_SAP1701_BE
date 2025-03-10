@@ -24,6 +24,7 @@ public class Account {
     private String username;
     private String password;
     private String email;
+    private String userCode;
 
     @Column(name = "roles")
     @Enumerated(EnumType.STRING)

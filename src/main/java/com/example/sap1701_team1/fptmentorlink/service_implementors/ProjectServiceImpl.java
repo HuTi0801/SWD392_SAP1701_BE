@@ -127,9 +127,17 @@ public class ProjectServiceImpl implements ProjectService {
 
     //Approve or reject project
     @Override
-    public Response updateStatusProjectById(Integer id, ProjectStatus status) {
+    public Response updateStatusProjectById(Integer id, ProjectStatus status, String rejectionReason) {
         Response response = new Response();
         try {
+            // Kiểm tra trạng thái hợp lệ (chỉ cho phép APPROVED hoặc REJECTED)
+            if (status != ProjectStatus.APPROVED && status != ProjectStatus.REJECTED) {
+                response.setSuccess(false);
+                response.setMessage("Invalid status! Only APPROVED or REJECTED are allowed.");
+                response.setStatusCode(400);
+                return response;
+            }
+
             // Tìm Project theo ID
             Optional<Project> optionalProject = projectRepo.findById(id);
             if (optionalProject.isEmpty()) {
@@ -141,26 +149,46 @@ public class ProjectServiceImpl implements ProjectService {
 
             Project project = optionalProject.get();
 
-            // Kiểm tra nếu trạng thái mới giống trạng thái cũ thì không cập nhật
-            if (project.getProjectStatus() == status) {
+            // Không cho phép cập nhật nếu trạng thái hiện tại đã là APPROVED hoặc REJECTED
+            if (project.getProjectStatus() == ProjectStatus.APPROVED || project.getProjectStatus() == ProjectStatus.REJECTED) {
                 response.setSuccess(false);
-                response.setMessage("Project is already in the requested status!");
+                response.setMessage("Cannot change status once it has been APPROVED or REJECTED.");
+                response.setStatusCode(400);
+                return response;
+            }
+
+            // Nếu trạng thái là REJECTED thì phải có lý do từ người dùng
+            if (status == ProjectStatus.REJECTED && (rejectionReason == null || rejectionReason.trim().isEmpty())) {
+                response.setSuccess(false);
+                response.setMessage("Rejection reason is required when rejecting a project.");
                 response.setStatusCode(400);
                 return response;
             }
 
             // Cập nhật trạng thái mới cho Project
             project.setProjectStatus(status);
+
+            // Nếu trạng thái là REJECTED, lưu lý do từ chối
+            if (status == ProjectStatus.REJECTED) {
+                project.setRejectionReason(rejectionReason); // Cần đảm bảo Project có trường `rejectionReason`
+            }
+
             projectRepo.save(project);
 
             // Lấy Group từ Project (nếu có)
-            Group group = project.getGroup(); // Cần đảm bảo Project có Group
+            Group group = project.getGroup();
+
+            // Nội dung thông báo
+            String notificationContent = "Project '" + project.getTopic() + "' has been " + status.name().toLowerCase();
+            if (status == ProjectStatus.REJECTED) {
+                notificationContent += ". Reason: " + rejectionReason;
+            }
 
             // Tạo thông báo mới trong Notification
             Notification notification = Notification.builder()
                     .type("Project Status Update")
-                    .content("Project " + project.getTopic() + " has been " + status.name().toLowerCase())
-                    .notificationStatus(NotificationStatus.UNREAD) //Mặc định là chưa đọc
+                    .content(notificationContent)
+                    .notificationStatus(NotificationStatus.UNREAD) // Mặc định là chưa đọc
                     .project(project) // Gán project liên quan
                     .group(group)
                     .build();
@@ -171,7 +199,7 @@ public class ProjectServiceImpl implements ProjectService {
             response.setSuccess(true);
             response.setMessage("Project status updated successfully!");
             response.setStatusCode(200);
-            response.setResult(projectMapper.toProjectResponse(project)); //Trả về ProjectResponse
+            response.setResult(projectMapper.toProjectResponse(project)); // Trả về ProjectResponse
         } catch (Exception e) {
             response.setSuccess(false);
             response.setMessage("Error updating project status: " + e.getMessage());

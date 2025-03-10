@@ -33,7 +33,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/update-status-project-{id}")
-    public Response updateProjectStatus(Integer id, ProjectStatus status) {
-        return projectService.updateStatusProjectById(id, status);
+    public Response updateProjectStatus(Integer id, ProjectStatus status, @RequestParam(required = false) String reason) {
+        return projectService.updateStatusProjectById(id, status, reason);
     }
 }

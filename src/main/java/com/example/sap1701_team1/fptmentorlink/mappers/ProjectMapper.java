@@ -23,6 +23,7 @@ public class ProjectMapper {
                 .topic(project.getTopic())
                 .description(project.getDescription())
                 .document(project.getDocument())
+                .rejectionReason(project.getRejectionReason())
                 .projectStatus(ProjectStatus.valueOf(project.getProjectStatus().name())) // Nếu Enum lưu dạng String
                 .group(project.getGroup() != null ? project.getGroup().getId() : null)
                 .lecturer(project.getLecturer() != null ? project.getLecturer().getId() : null)
