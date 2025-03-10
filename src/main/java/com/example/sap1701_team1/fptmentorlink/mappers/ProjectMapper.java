@@ -38,7 +38,8 @@ public class ProjectMapper {
                                         notification.getContent(),
                                         notification.getNotificationStatus(),
                                         notification.getProject().getId(),
-                                        notification.getGroup().getId()
+                                        notification.getGroup().getId(),
+                                        notification.getAppointment().getId()
                                 ))
                                 .collect(Collectors.toList())
                 )

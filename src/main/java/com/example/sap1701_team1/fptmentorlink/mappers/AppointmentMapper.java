@@ -16,6 +16,7 @@ public class AppointmentMapper {
                 .id(appointment.getId())
                 .date(appointment.getDate())
                 .description(appointment.getDescription())
+                .rejectionReason(appointment.getRejectionReason())
                 .appointmentStatus(appointment.getAppointmentStatus().name())
                 .mentorName(appointment.getMentor() != null ? appointment.getMentor().getAccount().getFullname(): "No mentor")
                 .studentName(appointment.getStudent() != null ? appointment.getStudent().getAccount().getFullname() : "No student")

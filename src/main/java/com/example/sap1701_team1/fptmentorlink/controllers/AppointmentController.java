@@ -1,11 +1,10 @@
 package com.example.sap1701_team1.fptmentorlink.controllers;
 
+import com.example.sap1701_team1.fptmentorlink.enums.AppointmentStatus;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.services.AppointmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/appointment")
@@ -20,8 +19,14 @@ public class AppointmentController {
     }
 
     //Get a appointment
-    @GetMapping("get-a-appointment-by-id")
+    @GetMapping("/get-a-appointment-by-id")
     public Response getAppointmentById(Integer id) {
         return appointmentService.getAppointmentById(id);
+    }
+
+    //Update status for Appointment
+    @PatchMapping("/update-status-appointment")
+    public Response updateAppointmentStatus(Integer id, AppointmentStatus status, @RequestParam(required = false) String reason) {
+        return appointmentService.updateStatusAppointment(id, status, reason);
     }
 }

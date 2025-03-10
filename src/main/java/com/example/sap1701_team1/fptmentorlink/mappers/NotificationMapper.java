@@ -18,6 +18,7 @@ public class NotificationMapper {
                 .content(notification.getContent())
                 .notificationStatus(notification.getNotificationStatus())
                 .projectId(notification.getProject() != null ? notification.getProject().getId() : null)
+                .appointmentId(notification.getAppointment() != null ? notification.getAppointment().getId() : null)
                 .build();
     }
 

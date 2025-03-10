@@ -15,6 +15,7 @@ public class AppointmentResponse {
     private Integer id;
     private Date date;
     private String description;
+    private String rejectionReason;
     private String appointmentStatus;
     private String mentorName;
     private String studentName;
