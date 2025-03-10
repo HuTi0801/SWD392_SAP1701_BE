@@ -26,7 +26,7 @@ public class AppointmentController {
 
     //Update status for Appointment
     @PatchMapping("/update-status-appointment")
-    public Response updateAppointmentStatus(Integer id, AppointmentStatus status, @RequestParam(required = false) String reason) {
+    public Response updateAppointmentStatus(Integer id, AppointmentStatus status, @RequestParam(required = fString reason) {
         return appointmentService.updateStatusAppointment(id, status, reason);
     }
 }
