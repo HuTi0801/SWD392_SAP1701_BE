@@ -13,19 +13,12 @@ import static com.example.sap1701_team1.fptmentorlink.enums.Permission.*;
 public enum Role {
     GUEST(Collections.emptySet()),
 
-    LEADER(
+    STUDENT(
         Set.of(
-            LEADER_CREATE_GROUP,
-            LEADER_MANAGE_MEMBERS,
-            LEADER_PROPOSE_TOPIC,
-            MEMBER_READ_GROUP,
-            MEMBER_UPDATE_PROFILE
-        )
-    ),
-    MEMBER(
-        Set.of(
-            MEMBER_READ_GROUP,
-            MEMBER_UPDATE_PROFILE
+                STUDENT_CREATE,
+                STUDENT_READ,
+                STUDENT_UPDATE,
+                STUDENT_DELETE
         )
     ),
     ADMIN(

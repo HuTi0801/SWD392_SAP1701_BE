@@ -14,5 +14,5 @@ public interface ProjectService {
     Response searchProject(String projectName, ProjectStatus status);
 
     //Approve or Reject Project
-    Response updateStatusProjectById(Integer id, ProjectStatus status);
+    Response updateStatusProjectById(Integer id, ProjectStatus status, String rejectReason);
 }

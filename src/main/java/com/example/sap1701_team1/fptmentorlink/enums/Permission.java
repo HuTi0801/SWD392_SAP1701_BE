@@ -6,12 +6,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Permission {
 
-    LEADER_CREATE_GROUP("leader:create_group"),
-    LEADER_MANAGE_MEMBERS("leader:manage_members"),
-    LEADER_PROPOSE_TOPIC("leader:propose_topic"),
-
-    MEMBER_READ_GROUP("member:read_group"),
-    MEMBER_UPDATE_PROFILE("member:update_profile"),
+    STUDENT_CREATE("student:create"),
+    STUDENT_READ("student:read"),
+    STUDENT_UPDATE("student:update"),
+    STUDENT_DELETE("student:delete"),
 
     LECTURE_CREATE("lecture:create"),
     LECTURE_READ("lecture:read"),

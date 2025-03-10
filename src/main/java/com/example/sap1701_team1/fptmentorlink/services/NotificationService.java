@@ -9,12 +9,9 @@ public interface NotificationService{
     //Get all notification
     Response getAllNotifications();
 
-    //Send message to students
-    //Response sendNotificationtoStudents(Integer notificationId);
-
     //Send message to Group
     Response sendNotificationToGroup(Integer groupId);
 
     //Send message to student
-    Response sendNotificationToStudent(Integer studentId);
+    Response sendNotificationToStudent(String studentId);
 }

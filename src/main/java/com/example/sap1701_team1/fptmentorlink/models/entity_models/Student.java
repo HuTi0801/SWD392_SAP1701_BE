@@ -17,8 +17,7 @@ import java.util.List;
 @Table(name = "`student`")
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
     private float jpa;
 

@@ -77,7 +77,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Response sendNotificationToStudent(Integer studentId) {
+    public Response sendNotificationToStudent(String studentId) {
         Response response = new Response();
         try {
             Student student = studentRepo.findById(studentId)
