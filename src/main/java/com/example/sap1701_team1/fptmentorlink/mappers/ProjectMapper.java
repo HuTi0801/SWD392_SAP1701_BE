@@ -38,8 +38,8 @@ public class ProjectMapper {
                                         notification.getContent(),
                                         notification.getNotificationStatus(),
                                         notification.getProject().getId(),
-                                        notification.getGroup().getId(),
-                                        notification.getAppointment().getId()
+                                        notification.getGroup() != null ? notification.getGroup().getId() : null, // 🔹 Kiểm tra null cho group
+                                        notification.getAppointment() != null ? notification.getAppointment().getId() : null
                                 ))
                                 .collect(Collectors.toList())
                 )

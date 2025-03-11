@@ -2,6 +2,7 @@ package com.example.sap1701_team1.fptmentorlink.models.entity_models;
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

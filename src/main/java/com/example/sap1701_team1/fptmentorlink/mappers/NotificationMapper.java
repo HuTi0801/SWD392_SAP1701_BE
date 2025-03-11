@@ -19,10 +19,12 @@ public class NotificationMapper {
                 .notificationStatus(notification.getNotificationStatus())
                 .projectId(notification.getProject() != null ? notification.getProject().getId() : null)
                 .appointmentId(notification.getAppointment() != null ? notification.getAppointment().getId() : null)
+                .groupId(notification.getGroup() != null ? notification.getGroup().getId() : null)
                 .build();
     }
 
     public List<NotificationResponse> toListResponse(List<Notification> notifications) {
         return notifications.stream().map(this::toResponse).collect(Collectors.toList());
     }
+
 }
