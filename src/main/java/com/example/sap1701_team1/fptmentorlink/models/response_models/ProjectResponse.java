@@ -1,7 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink.models.response_models;
 
 import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +17,7 @@ public class ProjectResponse {
     private String topic;
     private String description;
     private String document;
+    private String rejectionReason;
     private ProjectStatus projectStatus;
     private Integer group;
     private Integer lecturer;

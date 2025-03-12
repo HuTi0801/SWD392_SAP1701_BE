@@ -17,4 +17,5 @@ public class NotificationResponse {
     private NotificationStatus notificationStatus;
     private Integer projectId;
     private Integer groupId;
+    private Integer appointmentId;
 }

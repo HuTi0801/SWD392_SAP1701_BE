@@ -26,7 +26,7 @@ public class NotificationController {
 
     // API Lấy thông báo của một sinh viên
     @GetMapping("/student/{studentId}")
-    public Response getNotificationsForStudent(@PathVariable Integer studentId) {
+    public Response getNotificationsForStudent(@PathVariable String studentId) {
         return notificationService.sendNotificationToStudent(studentId);
     }
 }

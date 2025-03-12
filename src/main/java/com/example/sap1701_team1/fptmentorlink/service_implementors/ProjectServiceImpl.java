@@ -3,6 +3,7 @@ package com.example.sap1701_team1.fptmentorlink.service_implementors;
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
 import com.example.sap1701_team1.fptmentorlink.mappers.ProjectMapper;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.Appointment;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Group;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Project;
@@ -10,6 +11,7 @@ import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.NotificationRepo;
 import com.example.sap1701_team1.fptmentorlink.repositories.ProjectRepo;
 import com.example.sap1701_team1.fptmentorlink.services.ProjectService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -126,8 +128,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     //Approve or reject project
+    @Transactional
     @Override
-    public Response updateStatusProjectById(Integer id, ProjectStatus status) {
+    public Response updateStatusProjectById(Integer id, ProjectStatus status, String rejectionReason) {
         Response response = new Response();
         try {
             // Tìm Project theo ID
@@ -141,7 +144,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             Project project = optionalProject.get();
 
-            // Kiểm tra nếu trạng thái mới giống trạng thái cũ thì không cập nhật
+            // Nếu trạng thái mới trùng với trạng thái cũ -> Không cập nhật
             if (project.getProjectStatus() == status) {
                 response.setSuccess(false);
                 response.setMessage("Project is already in the requested status!");
@@ -149,29 +152,47 @@ public class ProjectServiceImpl implements ProjectService {
                 return response;
             }
 
-            // Cập nhật trạng thái mới cho Project
+            // Nếu trạng thái mới là REJECTED thì rejectionReason không được null
+            if (status == ProjectStatus.REJECTED && (rejectionReason == null || rejectionReason.trim().isEmpty())) {
+                response.setSuccess(false);
+                response.setMessage("Rejection reason is required when rejecting a project.");
+                response.setStatusCode(400);
+                return response;
+            }
+
+            // Cập nhật trạng thái mới
             project.setProjectStatus(status);
+
+            // Nếu bị REJECTED thì lưu lý do từ chối
+            if (status == ProjectStatus.REJECTED) {
+                project.setRejectionReason(rejectionReason);
+            }
+
+            // Lưu vào database
             projectRepo.save(project);
 
-            // Lấy Group từ Project (nếu có)
-            Group group = project.getGroup(); // Cần đảm bảo Project có Group
+            // Tạo thông báo
+            String notificationContent = "Project '" + project.getTopic() + "' has been " + status.name().toLowerCase();
+            if (status == ProjectStatus.REJECTED) {
+                notificationContent += ". Reason: " + rejectionReason;
+            }
 
-            // Tạo thông báo mới trong Notification
             Notification notification = Notification.builder()
                     .type("Project Status Update")
-                    .content("Project " + project.getTopic() + " has been " + status.name().toLowerCase())
-                    .notificationStatus(NotificationStatus.UNREAD) //Mặc định là chưa đọc
-                    .project(project) // Gán project liên quan
-                    .group(group)
+                    .content(notificationContent)
+                    .notificationStatus(NotificationStatus.UNREAD)
+                    .project(project)
+                    .group(project.getGroup())
                     .build();
 
-            notificationRepo.save(notification); // Lưu Notification vào DB
+            notificationRepo.save(notification); // Lưu thông báo vào DB
 
             // Trả về Response thành công
             response.setSuccess(true);
             response.setMessage("Project status updated successfully!");
             response.setStatusCode(200);
-            response.setResult(projectMapper.toProjectResponse(project)); //Trả về ProjectResponse
+            response.setResult(projectMapper.toProjectResponse(project));
+
         } catch (Exception e) {
             response.setSuccess(false);
             response.setMessage("Error updating project status: " + e.getMessage());

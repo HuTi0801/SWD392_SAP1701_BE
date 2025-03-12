@@ -26,6 +26,8 @@ public class Appointment {
 
     private String description;
 
+    private String rejectionReason;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
