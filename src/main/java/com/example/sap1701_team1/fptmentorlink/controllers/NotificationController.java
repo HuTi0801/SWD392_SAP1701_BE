@@ -13,20 +13,38 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     //get ALl notification
-    @GetMapping("/get-all-notification")
+    @GetMapping("/system/get-all-notification")
     public Response getAllNotification() {
         return notificationService.getAllNotifications();
     }
 
-    // Gửi thông báo đến nhóm
-    @PostMapping("/group/{groupId}")
-    public Response sendNotificationToGroup(@PathVariable Integer groupId) {
-        return notificationService.sendNotificationToGroup(groupId);
+    // Gửi thông báo project đến nhóm
+    @PostMapping("/system/send-notifi-project-to-group")
+    public Response sendNotificationProjectToGroup(Integer groupId) {
+        return notificationService.sendNotificationProjectToGroup(groupId);
     }
 
-    // API Lấy thông báo của một sinh viên
-    @GetMapping("/student/{studentId}")
-    public Response getNotificationsForStudent(@PathVariable String studentId) {
+    // Gửi thông báo project đến từng student trong group
+    @PostMapping("/system/send-notifi-project-to-student")
+    public Response sendNotificationsToStudent(String studentId) {
         return notificationService.sendNotificationToStudent(studentId);
+    }
+
+    //Gửi thông báo cuộc hẹn đến student
+    @PostMapping("/system/send-notifi-appointment-to-student")
+    public Response sendNotificationAppointment(@RequestParam Integer appointmentId, @RequestParam String studentId) {
+        return notificationService.sendNotificationAppointment(studentId, appointmentId);
+    }
+
+    //Search theo project Id
+    @GetMapping("/system/search-notifi-by-project-Id")
+    public Response searchNotificationByProjectId(@RequestParam Integer projectId) {
+        return notificationService.searchNotiticationByProjectId(projectId);
+    }
+
+    //Search theo appointment Id
+    @GetMapping("/system/search-notifi-by-appointment-Id")
+    public Response searchNotificationByAppointmentId(@RequestParam Integer appointmentId) {
+        return notificationService.searchNotificationByAppointmentId(appointmentId);
     }
 }

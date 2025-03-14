@@ -11,4 +11,8 @@ import java.util.List;
 public interface NotificationRepo extends JpaRepository<Notification, Integer> {
     @Query("SELECT n FROM Notification n WHERE n.group.id = :groupId")
     List<Notification> findByGroupId(@Param("groupId") Integer groupId);
+
+    List<Notification> findByAppointmentId(Integer appointmentId);
+
+    List<Notification> findByProjectId(Integer projectId);
 }

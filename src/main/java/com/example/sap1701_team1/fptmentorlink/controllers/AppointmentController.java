@@ -13,20 +13,20 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
 
     //Get all appointment
-    @GetMapping("/get-all-appointments")
+    @GetMapping("/mentor/get-all-appointments")
     public Response getAllAppointments() {
         return appointmentService.getAllAppointments();
     }
 
     //Get a appointment
-    @GetMapping("/get-a-appointment-by-id")
-    public Response getAppointmentById(Integer id) {
-        return appointmentService.getAppointmentById(id);
+    @GetMapping("/mentor/get-a-appointment-by-id")
+    public Response getAppointmentById(Integer appointmentId) {
+        return appointmentService.getAppointmentById(appointmentId);
     }
 
     //Update status for Appointment
-    @PatchMapping("/update-status-appointment")
-    public Response updateAppointmentStatus(Integer id, AppointmentStatus status, @RequestParam(required = false) String reason) {
-        return appointmentService.updateStatusAppointment(id, status, reason);
+    @PatchMapping("/mentor/update-status-appointment")
+    public Response updateAppointmentStatus(Integer appointmentId, AppointmentStatus status, @RequestParam(required = false) String reasonReject) {
+        return appointmentService.updateStatusAppointment(appointmentId, status, reasonReject);
     }
 }
