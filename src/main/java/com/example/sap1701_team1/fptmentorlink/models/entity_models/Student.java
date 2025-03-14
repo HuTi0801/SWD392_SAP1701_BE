@@ -1,11 +1,9 @@
 package com.example.sap1701_team1.fptmentorlink.models.entity_models;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
+@EqualsAndHashCode(exclude = "group")
 @Table(name = "`student`")
 public class Student {
     @Id
@@ -31,7 +30,7 @@ public class Student {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    @JsonManagedReference
+    @JsonIgnore
     private Group group;
 
     @ManyToOne

@@ -28,7 +28,7 @@ public class FPTMentorLinkApplication {
 	private final DepartmentRepo departmentRepo;
 	private final ProjectRepo projectRepo;
 	private final GroupRepo groupRepo;
-	private final ReportRepo reportRepo;
+//	private final ReportRepo reportRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(FPTMentorLinkApplication.class, args);
@@ -126,7 +126,7 @@ public class FPTMentorLinkApplication {
 					.fullname("Nguyen Thi Thanh Thao")
 					.phone("0909452783")
 					.is_active(true)
-					.userCode("SE100006")
+					.userCode("LE000001")
 					.build();
 			Account account7 = Account.builder()
 					.username("an")
@@ -136,7 +136,7 @@ public class FPTMentorLinkApplication {
 					.fullname("Phung Nhat An")
 					.phone("0998766547")
 					.is_active(true)
-					.userCode("SE100007")
+					.userCode("ME000001")
 					.build();
 			accountRepo.save(account1);
 			accountRepo.save(account2);
@@ -191,6 +191,61 @@ public class FPTMentorLinkApplication {
 			accountRepo.save(account10);
 			accountRepo.save(account11);
 
+			Account account12 = Account.builder()
+					.username("thainguyen")
+					.password("1")
+					.role(Role.STUDENT)
+					.email("thai@gmail.com")
+					.fullname("Nguyen Viet Thai")
+					.phone("091xxxxxx")
+					.is_active(true)
+					.userCode("SE100012")
+					.build();
+			Account account13 = Account.builder()
+					.username("duynn")
+					.password("1")
+					.role(Role.STUDENT)
+					.email("duynn@gmail.com")
+					.fullname("Nguyen Nhut Duy")
+					.phone("033xxxxxxx")
+					.is_active(true)
+					.userCode("SS100013")
+					.build();
+			Account account14 = Account.builder()
+					.username("thao")
+					.password("1")
+					.role(Role.STUDENT)
+					.email("thaont@gmail.com")
+					.fullname("Nguyen Thi Thao")
+					.phone("077xxxxxxx")
+					.is_active(true)
+					.userCode("SS100014")
+					.build();
+			Account account15 = Account.builder()
+					.username("khang")
+					.password("1")
+					.role(Role.STUDENT)
+					.email("khangba@gmail.com")
+					.fullname("Bach An Khang")
+					.phone("034xxxxxxx")
+					.is_active(true)
+					.userCode("SS100015")
+					.build();
+			Account account16 = Account.builder()
+					.username("tai")
+					.password("1")
+					.role(Role.STUDENT)
+					.email("tainv@gmail.com")
+					.fullname("Nguyen Van Tai")
+					.phone("031xxxxxxx")
+					.is_active(true)
+					.userCode("SS100016")
+					.build();
+			accountRepo.save(account12);
+			accountRepo.save(account13);
+			accountRepo.save(account14);
+			accountRepo.save(account15);
+			accountRepo.save(account16);
 			//thêm thông tin Group
 			Group group1 = Group.builder()
 					.name("3cats")
@@ -277,6 +332,41 @@ public class FPTMentorLinkApplication {
 			studentRepo.save(student10);
 			studentRepo.save(student11);
 
+			Student student12 = Student.builder()
+					.id(account12.getUserCode())
+					.account(account12)
+					.major(major1)
+					.jpa(9)
+					.build();
+			Student student13 = Student.builder()
+					.id(account13.getUserCode())
+					.account(account13)
+					.major(major3)
+					.jpa(8)
+					.build();
+			Student student14 = Student.builder()
+					.id(account14.getUserCode())
+					.account(account14)
+					.major(major3)
+					.jpa(9)
+					.build();
+			Student student15 = Student.builder()
+					.id(account15.getUserCode())
+					.account(account15)
+					.major(major3)
+					.jpa(7)
+					.build();
+			Student student16 = Student.builder()
+					.id(account16.getUserCode())
+					.account(account16)
+					.major(major3)
+					.jpa(7)
+					.build();
+			studentRepo.save(student12);
+			studentRepo.save(student13);
+			studentRepo.save(student14);
+			studentRepo.save(student15);
+			studentRepo.save(student16);
 			//gán student1 làm leader
 			group1.setLeader(student1);
 			groupRepo.save(group1);
