@@ -14,10 +14,15 @@ import java.util.Optional;
 public interface StudentRepo extends JpaRepository<Student, String> {
     @Query("SELECT s FROM Student s WHERE s.account.userCode = :userCode")
     Optional<Student> findLeaderByUserCode(@Param("userCode") String userCode);
+
     List<Student> findByAccountUserCodeIn(List<String> userCodes);
 
     @Modifying
     @Transactional
     @Query("UPDATE Student s SET s.group.id = :groupId WHERE s.id = :studentId")
     void updateGroupIdForStudent(@Param("studentId") String studentId, @Param("groupId") Integer groupId);
+
+    Optional<Student> findByAccountUserCode(String userCode);
+
+    List<Student> findByGroupId(Integer groupId);
 }
