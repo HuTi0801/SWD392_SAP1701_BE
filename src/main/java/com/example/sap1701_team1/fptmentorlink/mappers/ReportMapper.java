@@ -47,9 +47,8 @@ public class ReportMapper {
                 .type(notification.getType())
                 .content(notification.getContent())
                 .notificationStatus(notification.getNotificationStatus())
-//                .projectId(notification.getProject() != null ? notification.getProject().getId() : null)
-//                .groupId(notification.getGroup() != null ? notification.getGroup().getId() : null)
                 .accountId(notification.getAccount() != null ? notification.getAccount().getId() : null)
+                .reportId(notification.getReport() != null ? notification.getReport().getId() : null)
                 .build();
     }
 

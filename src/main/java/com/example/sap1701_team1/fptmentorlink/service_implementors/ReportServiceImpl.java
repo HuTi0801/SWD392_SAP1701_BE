@@ -25,8 +25,6 @@ public class ReportServiceImpl implements ReportService {
     private final ReportRepo reportRepo;
     private final NotificationRepo notificationRepo;
     private final ReportMapper reportMapper;
-    private final MentorRepo mentorRepo;
-    private final LecturerRepo lecturerRepo;
     private final AccountRepo accountRepo;
 
     @Transactional
@@ -70,19 +68,6 @@ public class ReportServiceImpl implements ReportService {
                 return buildErrorResponse("Only the group leader can submit a report!", 403);
             }
 
-            // 📜 Tạo Report với trạng thái mặc định là PENDING
-            Report report = Report.builder()
-                    .title(title)
-                    .content(content)
-                    .submittedTime(new Date())
-                    .reportStatus(ReportStatus.PENDING)
-                    .account(student.getAccount()) // Gán người gửi là student
-                    .group(group)
-                    .project(project)
-                    .build();
-
-            reportRepo.save(report); // Lưu Report vào DB
-
             // 🎯 Xử lý người nhận: Mentor hoặc Lecturer
             Account receiverAccount = null;
             String receiverName = "";
@@ -103,6 +88,33 @@ public class ReportServiceImpl implements ReportService {
                 receiverName = lecturerAcc.get().getFullname();
             } else {
                 return buildErrorResponse("Invalid receiver type! Must be 'MENTOR' or 'LECTURER'", 400);
+            }
+
+            Report report = new Report();
+
+            // 📜 Tạo Report với trạng thái mặc định là PENDING - role LECTURE
+            if (receiverType.equalsIgnoreCase("LECTURE")) {
+                report = Report.builder()
+                        .title(title)
+                        .content(content)
+                        .submittedTime(new Date())
+                        .reportStatus(ReportStatus.PENDING)
+                        .account(student.getAccount()) // Gán người gửi là student
+                        .group(group)
+                        .project(project)
+                        .build();
+                reportRepo.save(report); // Lưu Report vào DB
+            } else if (receiverType.equalsIgnoreCase("MENTOR")) {
+                report = Report.builder()
+                        .title(title)
+                        .content(content)
+                        .submittedTime(new Date())
+                        .reportStatus(ReportStatus.REQUEST_FOR_SUPPORTING)
+                        .account(student.getAccount()) // Gán người gửi là student
+                        .group(group)
+                        .project(project)
+                        .build();
+                reportRepo.save(report); // Lưu Report vào DB
             }
 
             // 📩 Gửi Notification đến người nhận

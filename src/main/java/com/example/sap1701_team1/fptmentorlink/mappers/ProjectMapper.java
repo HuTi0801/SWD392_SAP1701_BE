@@ -41,6 +41,7 @@ public class ProjectMapper {
                                         notification.getProject().getId(),
                                         notification.getGroup() != null ? notification.getGroup().getId() : null, // 🔹 Kiểm tra null cho group
                                         notification.getAppointment() != null ? notification.getAppointment().getId() : null,
+                                        null,
                                         null
                                 ))
                                 .collect(Collectors.toList()) : new ArrayList<>()
