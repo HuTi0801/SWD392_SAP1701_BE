@@ -14,7 +14,9 @@ import org.springframework.context.annotation.Bean;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @RequiredArgsConstructor
 @SpringBootApplication
@@ -28,7 +30,6 @@ public class FPTMentorLinkApplication {
 	private final DepartmentRepo departmentRepo;
 	private final ProjectRepo projectRepo;
 	private final GroupRepo groupRepo;
-//	private final ReportRepo reportRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(FPTMentorLinkApplication.class, args);
@@ -421,7 +422,8 @@ public class FPTMentorLinkApplication {
 			//thêm thông tin Mentor
 			Mentor mentor7 = Mentor.builder()
 					.account(account7)
-					.expertise("BA")
+//					.expertise(Arrays.asList("Business Analysis", "Project Management", "Agile"))
+					.expertise(List.of("BA", "Project Management", "Agile"))
 					.rating(5)
 					.build();
 			mentorRepo.save(mentor7);
