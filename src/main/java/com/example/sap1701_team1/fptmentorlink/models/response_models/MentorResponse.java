@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,6 +15,7 @@ public class MentorResponse {
     private Integer id;
     private String fullName;
     private String email;
-    private String expertise;
+    private List<String> expertise;
     private int rating;
+    private List<String> availableTimes;
 }

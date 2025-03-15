@@ -22,6 +22,4 @@ public class ProjectResponse {
     private Integer group;
     private Integer lecturer;
     private List<NotificationResponse> recentNotifications;
-//    private List<Report> reportList;
-    //    private List<Checkpoint> checkpointList;
 }

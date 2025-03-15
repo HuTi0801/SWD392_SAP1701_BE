@@ -36,4 +36,14 @@ public class ProjectController {
     public Response updateProjectStatus(Integer projectId, ProjectStatus status, @RequestParam(required = false) String reasonReject) {
         return projectService.updateStatusProjectById(projectId, status, reasonReject);
     }
+
+    @PostMapping("/create")
+    public Response createProject(
+            @RequestParam String groupId,
+            @RequestParam String topicName,
+            @RequestParam String description,
+            @RequestParam String lecturerId,
+            @RequestParam String requesterUserCode) {
+        return projectService.createProject(groupId, topicName, description, lecturerId, requesterUserCode);
+    }
 }

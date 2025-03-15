@@ -15,4 +15,6 @@ public interface ProjectService {
 
     //Approve or Reject Project
     Response updateStatusProjectById(Integer id, ProjectStatus status, String rejectReason);
+
+    Response createProject(String groupId, String topicName, String description, String lecturerId, String requesterUserCode);
 }
