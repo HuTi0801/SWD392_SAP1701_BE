@@ -1,4 +1,5 @@
 package com.example.sap1701_team1.fptmentorlink.models.entity_models;
+import com.example.sap1701_team1.fptmentorlink.converter.StringListConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,10 @@ public class Mentor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String expertise;
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "expertise")
+    private List<String> expertise;
+
     private int rating;
 
     @OneToOne

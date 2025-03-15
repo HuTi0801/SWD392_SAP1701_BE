@@ -17,14 +17,12 @@ public class MentorAvailability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String term;
     private int year;
     private int weekNumber;
     private String dayOfWeek;
     private Date startTime;
     private Date endTime;
-
     @ManyToOne
     @JoinColumn(name = "mentor_id")
     private Mentor mentor;
