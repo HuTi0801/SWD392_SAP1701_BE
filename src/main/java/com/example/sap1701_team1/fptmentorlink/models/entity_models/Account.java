@@ -42,4 +42,7 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private List<Chat> chatList;
+
+    @OneToMany(mappedBy = "account")
+    private List<Notification> notificationList;
 }

@@ -12,7 +12,9 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class MentorMapper {
+
     public MentorResponse toMentorResponse(Mentor mentor) {
+
         return MentorResponse.builder()
                 .id(mentor.getId())
                 .fullName(mentor.getAccount().getFullname())

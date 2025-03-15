@@ -20,6 +20,8 @@ public class NotificationMapper {
                 .projectId(notification.getProject() != null ? notification.getProject().getId() : null)
                 .appointmentId(notification.getAppointment() != null ? notification.getAppointment().getId() : null)
                 .groupId(notification.getGroup() != null ? notification.getGroup().getId() : null)
+                .accountId(notification.getAccount() != null ? notification.getAccount().getId() : null)
+                .reportId(notification.getReport() != null ? notification.getReport().getId() : null)
                 .build();
     }
 
