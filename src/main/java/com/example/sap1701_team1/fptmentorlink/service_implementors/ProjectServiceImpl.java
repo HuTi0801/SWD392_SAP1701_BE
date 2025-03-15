@@ -3,13 +3,9 @@ package com.example.sap1701_team1.fptmentorlink.service_implementors;
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
 import com.example.sap1701_team1.fptmentorlink.mappers.ProjectMapper;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.Appointment;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.Group;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.Project;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
-import com.example.sap1701_team1.fptmentorlink.repositories.NotificationRepo;
-import com.example.sap1701_team1.fptmentorlink.repositories.ProjectRepo;
+import com.example.sap1701_team1.fptmentorlink.repositories.*;
 import com.example.sap1701_team1.fptmentorlink.services.ProjectService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +24,9 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepo projectRepo;
     private final ProjectMapper projectMapper;
     private final NotificationRepo notificationRepo;
+    private final GroupRepo groupRepository;
+    private final StudentRepo studentRepository;
+    private final LecturerRepo lecturerRepository;
 
     //Get all project
     @Override
@@ -199,5 +198,63 @@ public class ProjectServiceImpl implements ProjectService {
             response.setStatusCode(500);
         }
         return response;
+    }
+
+    @Override
+    @Transactional
+    public Response createProject(String groupId, String topicName, String description, String lecturerId, String requesterUserCode) {
+        Optional<Group> optGroup = groupRepository.findById(Integer.parseInt(groupId));
+        if (optGroup.isEmpty()) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("Group not found!")
+                    .statusCode(404)
+                    .build();
+        }
+        Group group = optGroup.get();
+
+        Optional<Project> existingProject = projectRepo.findByGroupId(group.getId());
+        if (existingProject.isPresent()) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("Project already exists for this group!")
+                    .statusCode(400)
+                    .build();
+        }
+
+        Optional<Student> optRequester = studentRepository.findByAccountUserCode(requesterUserCode);
+        if (optRequester.isEmpty() || !group.getLeader().equals(optRequester.get())) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("Only the group leader can create a project!")
+                    .statusCode(403)
+                    .build();
+        }
+
+        Optional<Lecturer> optLecturer = lecturerRepository.findById(Integer.parseInt(lecturerId));
+        if (optLecturer.isEmpty()) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("Lecturer not found!")
+                    .statusCode(404)
+                    .build();
+        }
+        Lecturer lecturer = optLecturer.get();
+
+        Project newProject = Project.builder()
+                .topic(topicName)
+                .description(description)
+                .group(group)
+                .lecturer(lecturer)
+                .projectStatus(ProjectStatus.PENDING)
+                .build();
+        newProject = projectRepo.save(newProject);
+
+        return Response.builder()
+                .isSuccess(true)
+                .message("Project created successfully!")
+                .statusCode(201)
+                .result(projectMapper.toProjectResponse(newProject))
+                .build();
     }
 }

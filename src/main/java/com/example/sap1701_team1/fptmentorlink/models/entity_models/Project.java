@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -38,8 +39,8 @@ public class Project {
     @JoinColumn(name = "lecturer_id")
     private Lecturer lecturer;
 
-    @OneToMany(mappedBy = "project")
-    private List<Notification> notificationList;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notificationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "project")
     private List<Report> reportList;

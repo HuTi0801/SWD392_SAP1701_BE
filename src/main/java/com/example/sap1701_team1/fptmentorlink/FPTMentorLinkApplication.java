@@ -119,21 +119,21 @@ public class FPTMentorLinkApplication {
 					.userCode("SE100005")
 					.build();
 			Account account6 = Account.builder()
-					.username("thao")
+					.username("binhnn")
 					.password("1")
 					.role(Role.LECTURE)
-					.email("thao@gmail.com")
-					.fullname("Nguyen Thi Thanh Thao")
-					.phone("0909452783")
+					.email("binhnn@gmail.com")
+					.fullname("Nguyen Nguyen Binh")
+					.phone("0909xxxxxx")
 					.is_active(true)
 					.userCode("LE000001")
 					.build();
 			Account account7 = Account.builder()
-					.username("an")
+					.username("quocndk")
 					.password("1")
 					.role(Role.MENTOR)
-					.email("an@gmail.com")
-					.fullname("Phung Nhat An")
+					.email("quocndk@gmail.com")
+					.fullname("Nguyen Dang Kien Quoc")
 					.phone("0998766547")
 					.is_active(true)
 					.userCode("ME000001")
@@ -241,11 +241,33 @@ public class FPTMentorLinkApplication {
 					.is_active(true)
 					.userCode("SS100016")
 					.build();
+			Account account17 = Account.builder()
+					.username("hoangnt")
+					.password("1")
+					.role(Role.LECTURE)
+					.email("hoangnt@gmail.com")
+					.fullname("Nguyen The Hoang")
+					.phone("031xxxxxxx")
+					.is_active(true)
+					.userCode("LE000002")
+					.build();
+			Account account18 = Account.builder()
+					.username("duongttt2")
+					.password("1")
+					.role(Role.LECTURE)
+					.email("duongttt2@gmail.com")
+					.fullname("To Thi Thuy Duong")
+					.phone("031xxxxxxx")
+					.is_active(true)
+					.userCode("LE000003")
+					.build();
 			accountRepo.save(account12);
 			accountRepo.save(account13);
 			accountRepo.save(account14);
 			accountRepo.save(account15);
 			accountRepo.save(account16);
+			accountRepo.save(account17);
+			accountRepo.save(account18);
 			//thêm thông tin Group
 			Group group1 = Group.builder()
 					.name("3cats")
@@ -381,6 +403,20 @@ public class FPTMentorLinkApplication {
 					.accademicRank("Master")
 					.build();
 			lecturerRepo.save(lecturer6);
+
+			Lecturer lecturer17 = Lecturer.builder()
+					.account(account17)
+					.department(department1)
+					.accademicRank("Master")
+					.build();
+			lecturerRepo.save(lecturer17);
+
+			Lecturer lecturer18 = Lecturer.builder()
+					.account(account18)
+					.department(department2)
+					.accademicRank("Master")
+					.build();
+			lecturerRepo.save(lecturer18);
 
 			//thêm thông tin Mentor
 			Mentor mentor7 = Mentor.builder()
