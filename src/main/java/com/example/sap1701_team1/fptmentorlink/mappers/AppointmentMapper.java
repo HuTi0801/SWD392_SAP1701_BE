@@ -34,7 +34,8 @@ public class AppointmentMapper {
                                         notification.getNotificationStatus(),
                                         notification.getProject() != null ? notification.getProject().getId() : null,
                                         notification.getGroup() != null ? notification.getGroup().getId() : null,
-                                        notification.getAppointment().getId()
+                                        notification.getAppointment().getId(),
+                                        null
                                 ))
                                 .collect(Collectors.toList())
                 )

@@ -29,8 +29,8 @@ public class ProjectMapper {
                 .lecturer(project.getLecturer() != null ? project.getLecturer().getId() : null)
                 .recentNotifications(
                         project.getNotificationList().stream()
-                                .filter(notification -> notification.getProject() != null) // 🔹 Chỉ lấy thông báo có project
-                                .sorted(Comparator.comparing(Notification::getId).reversed()) // 🔹 Sắp xếp theo ID mới nhất
+                                .filter(notification -> notification.getProject() != null) // Chỉ lấy thông báo có project
+                                .sorted(Comparator.comparing(Notification::getId).reversed()) // Sắp xếp theo ID mới nhất
                                 .limit(5) // 🔹 Giới hạn 5 thông báo gần nhất
                                 .map(notification -> new NotificationResponse(
                                         notification.getId(),
@@ -39,7 +39,8 @@ public class ProjectMapper {
                                         notification.getNotificationStatus(),
                                         notification.getProject().getId(),
                                         notification.getGroup() != null ? notification.getGroup().getId() : null, // 🔹 Kiểm tra null cho group
-                                        notification.getAppointment() != null ? notification.getAppointment().getId() : null
+                                        notification.getAppointment() != null ? notification.getAppointment().getId() : null,
+                                        null
                                 ))
                                 .collect(Collectors.toList())
                 )
