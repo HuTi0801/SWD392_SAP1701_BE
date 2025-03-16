@@ -18,5 +18,6 @@ public class MentorResponse {
     private String email;
     private List<String> expertise;
     private int rating;
+    private int year;
     private List<String> availableTimes;
 }
