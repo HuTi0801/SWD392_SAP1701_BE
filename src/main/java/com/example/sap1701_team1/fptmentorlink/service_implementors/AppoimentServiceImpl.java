@@ -120,7 +120,7 @@ public class AppoimentServiceImpl implements AppointmentService {
             }
 
             //Tạo thông báo trong Notification
-            String notificationContent = "Appointment ID " + appointment1.getId() + " has been " + status.name().toLowerCase();
+            String notificationContent = "Appointment about ' " + appointment1.getDescription() + " ' of " +appointment1.getStudent().getAccount().getFullname() +  " has been " + status.name().toLowerCase();
             if(status == AppointmentStatus.REJECTED){
                 notificationContent += ". Reason: " + reason;
             }

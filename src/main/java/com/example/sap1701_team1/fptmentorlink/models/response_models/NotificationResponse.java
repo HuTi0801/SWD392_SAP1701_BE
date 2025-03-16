@@ -18,4 +18,6 @@ public class NotificationResponse {
     private Integer projectId;
     private Integer groupId;
     private Integer appointmentId;
+    private Integer accountId;
+    private Integer reportId;
 }

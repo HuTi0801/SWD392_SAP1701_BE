@@ -14,27 +14,27 @@ public class ProjectController {
     private final ProjectService projectService;
 
     //Get All Project
-    @GetMapping("/get-all-project")
+    @GetMapping("/lecturer/get-all-project")
     public Response getAllProject() {
         return projectService.getAllProject();
     }
 
     //Get A Project
-    @GetMapping("/get-a-project")
-    public Response getAProject(Integer id) {
-        return projectService.getProjectById(id);
+    @GetMapping("/lecturer/get-a-project")
+    public Response getAProject(Integer projectId) {
+        return projectService.getProjectById(projectId);
     }
 
     //Search Project
     @GetMapping("/search-project")
-    public Response searchProject(@Parameter(required = false) @RequestParam(required = false) String projectName,
-                                  @Parameter(required = false) @RequestParam(required = false) ProjectStatus status) {
+    public Response searchProject(@RequestParam(required = false) String projectName,
+                                  @RequestParam(required = false) ProjectStatus status) {
         return projectService.searchProject(projectName, status);
     }
 
-    @PatchMapping("/update-status-project-{id}")
-    public Response updateProjectStatus(Integer id, ProjectStatus status, @RequestParam(required = false) String reason) {
-        return projectService.updateStatusProjectById(id, status, reason);
+    @PatchMapping("/lecturer/update-status-project")
+    public Response updateProjectStatus(Integer projectId, ProjectStatus status, @RequestParam(required = false) String reasonReject) {
+        return projectService.updateStatusProjectById(projectId, status, reasonReject);
     }
 
     @PostMapping("/create")

@@ -112,7 +112,7 @@ public class ProjectServiceImpl implements ProjectService {
                 response.setResult(null);
             } else {
                 response.setMessage("Projects retrieved successfully!");
-                response.setResult(projectMapper.toListProjectResponse(projects)); // ✅ Đảm bảo trả về List<ProjectResponse>
+                response.setResult(projectMapper.toListProjectResponse(projects)); //Đảm bảo trả về List<ProjectResponse>
                 response.setSuccess(true);
                 response.setStatusCode(200);
             }

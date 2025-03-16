@@ -1,4 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink.models.entity_models;
+import com.example.sap1701_team1.fptmentorlink.enums.ProjectStatus;
+import com.example.sap1701_team1.fptmentorlink.enums.ReportStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +27,10 @@ public class Report {
     private String feedback;
     private Date feedbackTime;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private ReportStatus reportStatus;
+
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
@@ -33,7 +39,7 @@ public class Report {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToMany(mappedBy = "report")
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Notification> notificationList;
 
     @ManyToOne

@@ -5,6 +5,7 @@ import com.example.sap1701_team1.fptmentorlink.models.entity_models.Availability
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Mentor;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.MentorAvailability;
 import com.example.sap1701_team1.fptmentorlink.models.request_models.MentorRequest;
+import com.example.sap1701_team1.fptmentorlink.models.response_models.MentorResponse;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.MentorRepo;
 import com.example.sap1701_team1.fptmentorlink.services.MentorService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,31 @@ public class MentorServiceImpl implements MentorService {
 
     private final MentorRepo mentorRepo;
     private final MentorMapper mentorMapper;
+
+    @Override
+    public Response getAllMentors() {
+        Response response = new Response();
+        try {
+            List<Mentor> mentorList = mentorRepo.findAll();
+
+            if (mentorList.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("There are no mentors!");
+                response.setStatusCode(404);
+            } else {
+                List<MentorResponse> mentorResponses = mentorMapper.toListMentorResponse(mentorList);
+                response.setMessage("Get all mentors successfully!");
+                response.setResult(mentorResponses);
+                response.setSuccess(true);
+                response.setStatusCode(200);
+            }
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setSuccess(false);
+            response.setMessage("Error retrieving mentors: " + e.getMessage());
+        }
+        return response;
+    }
 
     @Override
     public Response searchMentors(MentorRequest request) {
@@ -52,6 +79,36 @@ public class MentorServiceImpl implements MentorService {
             return Response.builder()
                     .isSuccess(false)
                     .message("Error retrieving mentors: " + e.getMessage())
+                    .statusCode(500)
+                    .build();
+        }
+    }
+
+    @Override
+    public Response getMentorById(Integer mentorId) {
+        try {
+            Optional<Mentor> mentorOpt = mentorRepo.findById(mentorId);
+            if (mentorOpt.isEmpty()) {
+                return Response.builder()
+                        .isSuccess(false)
+                        .message("Mentor not found!")
+                        .statusCode(404)
+                        .build();
+            }
+
+            Mentor mentor = mentorOpt.get();
+            MentorResponse mentorResponse = mentorMapper.toMentorResponse(mentor);
+
+            return Response.builder()
+                    .isSuccess(true)
+                    .message("Mentor details retrieved successfully!")
+                    .statusCode(200)
+                    .result(mentorResponse)
+                    .build();
+        } catch (Exception e) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("Error retrieving mentor: " + e.getMessage())
                     .statusCode(500)
                     .build();
         }

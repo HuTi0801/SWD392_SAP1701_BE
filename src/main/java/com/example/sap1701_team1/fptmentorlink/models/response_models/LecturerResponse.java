@@ -11,5 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LecturerResponse {
     private Integer id;
-    private String accademicRank;
+    private String fullName;
+    private String email;
+    private String academicRank;
+    private String departmentName;
 }
