@@ -48,9 +48,9 @@ public class NotificationController {
         return notificationService.searchNotificationByAppointmentId(appointmentId);
     }
 
-    //
+    //Send notification of report to mentor/lecturer
     @PostMapping("/system/send-notifi-report-to-mentor-or-lecturer")
-    public Response sendNotificationForNewReport(Integer reportId, Integer receiverId) {
+    public Response sendNotificationReportForMentorLecture(Integer reportId, Integer receiverId) {
         return notificationService.sendNotificationReportForMentorLecture(reportId, receiverId);
     }
 }

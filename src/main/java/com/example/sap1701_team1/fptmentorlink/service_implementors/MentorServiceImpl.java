@@ -1,13 +1,14 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
 import com.example.sap1701_team1.fptmentorlink.mappers.MentorMapper;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.AvailabilitySlot;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.Mentor;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.MentorAvailability;
+import com.example.sap1701_team1.fptmentorlink.mappers.ReportMapper;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
 import com.example.sap1701_team1.fptmentorlink.models.request_models.MentorRequest;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.MentorResponse;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
+import com.example.sap1701_team1.fptmentorlink.repositories.AccountRepo;
 import com.example.sap1701_team1.fptmentorlink.repositories.MentorRepo;
+import com.example.sap1701_team1.fptmentorlink.repositories.ReportRepo;
 import com.example.sap1701_team1.fptmentorlink.services.MentorService;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -24,9 +25,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MentorServiceImpl implements MentorService {
-
     private final MentorRepo mentorRepo;
     private final MentorMapper mentorMapper;
+    private final ReportMapper reportMapper;
+    private final ReportRepo reportRepo;
+    private final AccountRepo accountRepo;
 
     @Override
     public Response getAllMentors() {
@@ -112,6 +115,51 @@ public class MentorServiceImpl implements MentorService {
                     .statusCode(500)
                     .build();
         }
+    }
+
+    @Override
+    public Response getReportDetailForMentor(Integer mentorId, Integer reportId) {
+        Response response = new Response();
+        try {
+            Optional<Account> optionalMentor = accountRepo.findById(mentorId);
+            if (optionalMentor.isEmpty() || !optionalMentor.get().getRole().name().equals("MENTOR")) {
+                response.setSuccess(false);
+                response.setMessage("Mentor not found or role mismatch!");
+                response.setStatusCode(403);
+                return response;
+            }
+
+            Optional<Report> optionalReport = reportRepo.findById(reportId);
+            if (optionalReport.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("Report not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Report report = optionalReport.get();
+
+            boolean isReceiver = report.getNotificationList()
+                    .stream()
+                    .anyMatch(noti -> noti.getAccount().getId().equals(mentorId));
+
+            if (!isReceiver) {
+                response.setSuccess(false);
+                response.setMessage("You are not authorized to view this report!");
+                response.setStatusCode(403);
+                return response;
+            }
+
+            response.setMessage("Report fetched successfully");
+            response.setResult(reportMapper.toReportResponse(report));
+            response.setSuccess(true);
+            response.setStatusCode(200);
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error retrieving report: " + e.getMessage());
+            response.setStatusCode(500);
+        }
+        return response;
     }
 
     public Specification<Mentor> getMentorSpecification(MentorRequest request) {

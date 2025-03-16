@@ -7,4 +7,7 @@ public interface MentorService {
     Response getAllMentors();
     Response searchMentors(MentorRequest request);
     Response getMentorById(Integer mentorId);
+
+    //Xem report
+    Response getReportDetailForMentor(Integer mentorId, Integer reportId);
 }
