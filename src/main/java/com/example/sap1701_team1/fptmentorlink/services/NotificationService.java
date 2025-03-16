@@ -23,4 +23,7 @@ public interface NotificationService{
 
     //Search notification by appoinment Id
     Response searchNotificationByAppointmentId(Integer appointmentId);
+
+    //Send message report to Lecturer - mentor
+    Response sendNotificationReportForMentorLecture(Integer reportId, Integer receiverId);
 }
