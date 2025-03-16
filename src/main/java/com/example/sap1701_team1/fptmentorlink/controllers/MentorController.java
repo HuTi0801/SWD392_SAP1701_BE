@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -19,20 +20,17 @@ public class MentorController {
     public Response searchMentors(
             @Parameter @RequestParam(required = false) List<String> expertise,
             @Parameter @RequestParam(required = false) Integer minRating,
-            @Parameter @RequestParam(required = false) String term,
             @Parameter @RequestParam(required = false) Integer year,
-            @Parameter @RequestParam(required = false) Integer weekNumber,
-            @Parameter @RequestParam(required = false) String dayOfWeek) {
+            @Parameter @RequestParam(required = false) Date startTime,
+            @Parameter @RequestParam(required = false) Date endTime) {
 
         MentorRequest request = MentorRequest.builder()
                 .expertise(expertise)
                 .minRating(minRating)
-                .term(term)
                 .year(year)
-                .weekNumber(weekNumber)
-                .dayOfWeek(dayOfWeek)
+                .startTime(startTime)
+                .endTime(endTime)
                 .build();
-
         return mentorService.searchMentors(request);
     }
 

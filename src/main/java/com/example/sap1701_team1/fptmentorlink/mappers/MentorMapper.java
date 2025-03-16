@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class MentorMapper {
+    public List<MentorResponse> toListMentorResponse(List<Mentor> mentors) {
+        return mentors.stream().map(this::toMentorResponse).collect(Collectors.toList());
+    }
 
     public MentorResponse toMentorResponse(Mentor mentor) {
 
@@ -21,21 +24,19 @@ public class MentorMapper {
                 .email(mentor.getAccount().getEmail())
                 .expertise(mentor.getExpertise())
                 .rating(mentor.getRating())
-                .availableTimes(
-                        mentor.getMentorAvailabilityList().stream()
-                                .map(this::formatAvailability)
-                                .collect(Collectors.toList())
-                )
+                .year(getYearsFromMentorAvailability(mentor))
+                .availableTimes(mentor.getMentorAvailabilityList().stream()
+                        .flatMap(availability -> availability.getAvailabilitySlots().stream()
+                                .filter(slot -> !slot.isBooked())
+                                .map(slot -> slot.getStartTime() + " - " + slot.getEndTime()))
+                        .collect(Collectors.toList()))
                 .build();
     }
 
-    private String formatAvailability(MentorAvailability availability) {
-        return String.format("%s (Week %d, %s): %s - %s",
-                availability.getTerm(), availability.getWeekNumber(),
-                availability.getDayOfWeek(), availability.getStartTime(), availability.getEndTime());
-    }
-
-    public List<MentorResponse> toListMentorResponse(List<Mentor> mentors) {
-        return mentors.stream().map(this::toMentorResponse).collect(Collectors.toList());
+    private int getYearsFromMentorAvailability(Mentor mentor) {
+        return mentor.getMentorAvailabilityList().stream()
+                .map(MentorAvailability::getYear)
+                .findFirst()
+                .orElse(0);
     }
 }
