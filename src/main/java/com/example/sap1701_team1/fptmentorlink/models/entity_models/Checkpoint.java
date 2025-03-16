@@ -24,9 +24,6 @@ public class Checkpoint {
     private String deadline;
     private String document;
 
-    //enum
-    //private String status;
-
     @OneToMany(mappedBy = "checkpoint")
     private List<Notification> notificationList;
 
