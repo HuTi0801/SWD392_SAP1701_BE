@@ -32,43 +32,43 @@ public class ReportServiceImpl implements ReportService {
     public Response createReport(String studentId, Integer groupId, Integer projectId, Integer receiverId, String receiverType, String title, String content) {
         Response response = new Response();
         try {
-            // 🏫 Tìm Student
+            // Tìm Student
             Optional<Student> optionalStudent = studentRepo.findById(studentId);
             if (optionalStudent.isEmpty()) {
                 return buildErrorResponse("Student not found!", 404);
             }
             Student student = optionalStudent.get();
 
-            // 🔍 Tìm Group
+            // Tìm Group
             Optional<Group> optionalGroup = groupRepo.findById(groupId);
             if (optionalGroup.isEmpty()) {
                 return buildErrorResponse("Group not found!", 404);
             }
             Group group = optionalGroup.get();
 
-            // 📌 Tìm Project
+            // Tìm Project
             Optional<Project> optionalProject = projectRepo.findById(projectId);
             if (optionalProject.isEmpty()) {
                 return buildErrorResponse("Project not found!", 404);
             }
             Project project = optionalProject.get();
 
-            // 🔗 Kiểm tra Student có nằm trong Group không?
+            // Kiểm tra Student có nằm trong Group không?
             if (!group.getStudentList().contains(student)) {
                 return buildErrorResponse("Student does not belong to this group!", 403);
             }
 
-            // 🔗 Kiểm tra Group có liên kết đúng với Project không?
+            // Kiểm tra Group có liên kết đúng với Project không?
             if (!project.getGroup().getId().equals(groupId)) {
                 return buildErrorResponse("Group does not belong to this project!", 403);
             }
 
-            // ✅ Kiểm tra Student có phải là leader của Group không
+            // Kiểm tra Student có phải là leader của Group không
             if (!group.getLeader().getId().equals(student.getId())) {
                 return buildErrorResponse("Only the group leader can submit a report!", 403);
             }
 
-            // 🎯 Xử lý người nhận: Mentor hoặc Lecturer
+            // Xử lý người nhận: Mentor hoặc Lecturer
             Account receiverAccount = null;
             String receiverName = "";
 
@@ -92,7 +92,7 @@ public class ReportServiceImpl implements ReportService {
 
             Report report = new Report();
 
-            // 📜 Tạo Report với trạng thái mặc định là PENDING - role LECTURE
+            // Tạo Report với trạng thái mặc định là PENDING - role LECTURE
             if (receiverType.equalsIgnoreCase("LECTURE")) {
                 report = Report.builder()
                         .title(title)
@@ -117,7 +117,7 @@ public class ReportServiceImpl implements ReportService {
                 reportRepo.save(report); // Lưu Report vào DB
             }
 
-            // 📩 Gửi Notification đến người nhận
+            // Gửi Notification đến người nhận
             Notification notification = Notification.builder()
                     .type("New Report Submission")
                     .content("New report submitted by " + student.getAccount().getFullname() +
@@ -136,7 +136,7 @@ public class ReportServiceImpl implements ReportService {
             notifications.add(notification);
             report.setNotificationList(notifications);
 
-            // 🔥 Trả về Response thành công
+            // Trả về Response thành công
             response.setSuccess(true);
             response.setMessage("Report submitted successfully!");
             response.setStatusCode(200);
@@ -150,7 +150,7 @@ public class ReportServiceImpl implements ReportService {
         return response;
     }
 
-    // 🚨 Hàm build response lỗi
+    // Hàm build response lỗi
     private Response buildErrorResponse(String message, int statusCode) {
         Response response = new Response();
         response.setSuccess(false);

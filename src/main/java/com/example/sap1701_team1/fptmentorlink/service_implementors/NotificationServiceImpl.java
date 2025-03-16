@@ -1,6 +1,8 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
+import com.example.sap1701_team1.fptmentorlink.enums.ReportStatus;
+import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import com.example.sap1701_team1.fptmentorlink.mappers.NotificationMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
 import com.example.sap1701_team1.fptmentorlink.models.request_models.NotificationRequest;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,8 @@ public class NotificationServiceImpl implements NotificationService {
     private final StudentRepo studentRepo;
     private final AppointmentRepo appointmentRepo;
     private final ProjectRepo projectRepo;
+    private final ReportRepo reportRepo;
+    private final AccountRepo accountRepo;
 
     @Override
     public Response getAllNotifications() {
@@ -194,6 +199,7 @@ public class NotificationServiceImpl implements NotificationService {
         return response;
     }
 
+    //Search notification by appointment id
     @Override
     public Response searchNotificationByAppointmentId(Integer appointmentId) {
         Response response = new Response();
@@ -224,4 +230,78 @@ public class NotificationServiceImpl implements NotificationService {
         }
         return response;
     }
+
+    @Override
+    public Response sendNotificationReportForMentorLecture(Integer reportId, Integer receiverId) {
+        Response response = new Response();
+        try {
+            // Tìm report
+            Report report = reportRepo.findById(reportId).orElse(null);
+            if (report == null) {
+                response.setSuccess(false);
+                response.setMessage("Report not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            // Tìm người nhận
+            Account receiver = accountRepo.findById(receiverId).orElse(null);
+            if (receiver == null) {
+                response.setSuccess(false);
+                response.setMessage("Receiver account not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            // Người gửi (chính là người tạo report)
+            Account sender = report.getAccount();
+
+            // Kiểm tra người nhận có đúng trong danh sách recipient không (dựa vào role)
+            ReportStatus reportStatus = report.getReportStatus();
+            boolean isValidRecipient = false;
+
+            if (reportStatus == ReportStatus.REQUEST_FOR_SUPPORTING && receiver.getRole() == Role.MENTOR) {
+                isValidRecipient = true;
+            } else if ((reportStatus == ReportStatus.PENDING
+                    || reportStatus == ReportStatus.IN_PROGRESS
+                    || reportStatus == ReportStatus.COMPLETED)
+                    && receiver.getRole() == Role.LECTURE) {
+                isValidRecipient = true;
+            }
+
+            if (!isValidRecipient) {
+                response.setSuccess(false);
+                response.setMessage("Receiver does not match the report status requirement!");
+                response.setStatusCode(403);
+                return response;
+            }
+
+            // Gửi notification
+            Notification notification = Notification.builder()
+                    .type("New Report Notification")
+                    .content("Sender: '" + sender.getFullname()
+                            + "' has sent the report '" + report.getTitle()
+                            + "' to '" + receiver.getFullname()
+                            + "' - Reason: " + reportStatus.name())
+                    .notificationStatus(NotificationStatus.UNREAD)
+                    .account(receiver)
+                    .report(report)
+                    .build();
+
+            notificationRepo.save(notification);
+
+            response.setSuccess(true);
+            response.setMessage("Notification sent successfully!");
+            response.setStatusCode(200);
+            response.setResult(notification);
+
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error sending notification: " + e.getMessage());
+            response.setStatusCode(500);
+        }
+        return response;
+    }
+
+
 }
