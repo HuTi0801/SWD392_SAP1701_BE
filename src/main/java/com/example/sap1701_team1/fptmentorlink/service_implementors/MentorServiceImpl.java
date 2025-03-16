@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -77,6 +78,36 @@ public class MentorServiceImpl implements MentorService {
             return Response.builder()
                     .isSuccess(false)
                     .message("Error retrieving mentors: " + e.getMessage())
+                    .statusCode(500)
+                    .build();
+        }
+    }
+
+    @Override
+    public Response getMentorById(Integer mentorId) {
+        try {
+            Optional<Mentor> mentorOpt = mentorRepo.findById(mentorId);
+            if (mentorOpt.isEmpty()) {
+                return Response.builder()
+                        .isSuccess(false)
+                        .message("Mentor not found!")
+                        .statusCode(404)
+                        .build();
+            }
+
+            Mentor mentor = mentorOpt.get();
+            MentorResponse mentorResponse = mentorMapper.toMentorResponse(mentor);
+
+            return Response.builder()
+                    .isSuccess(true)
+                    .message("Mentor details retrieved successfully!")
+                    .statusCode(200)
+                    .result(mentorResponse)
+                    .build();
+        } catch (Exception e) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("Error retrieving mentor: " + e.getMessage())
                     .statusCode(500)
                     .build();
         }

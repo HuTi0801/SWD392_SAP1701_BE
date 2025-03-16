@@ -5,6 +5,6 @@ import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 
 public interface MentorService {
     Response getAllMentors();
-
     Response searchMentors(MentorRequest request);
+    Response getMentorById(Integer mentorId);
 }
