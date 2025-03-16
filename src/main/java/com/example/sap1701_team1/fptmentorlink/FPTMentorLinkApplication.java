@@ -30,6 +30,8 @@ public class FPTMentorLinkApplication {
 	private final DepartmentRepo departmentRepo;
 	private final ProjectRepo projectRepo;
 	private final GroupRepo groupRepo;
+	private final MentorAvailabilityRepo mentorAvailabilityRepo;
+	private final AvailabilitySlotRepo availabilitySlotRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(FPTMentorLinkApplication.class, args);
@@ -420,17 +422,47 @@ public class FPTMentorLinkApplication {
 			lecturerRepo.save(lecturer18);
 
 			//thêm thông tin Mentor
-			Mentor mentor7 = Mentor.builder()
+			Mentor mentor1 = Mentor.builder()
 					.account(account7)
-//					.expertise(Arrays.asList("Business Analysis", "Project Management", "Agile"))
 					.expertise(List.of("BA", "Project Management", "Agile"))
 					.rating(5)
 					.build();
-			mentorRepo.save(mentor7);
+			mentorRepo.save(mentor1);
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			// Chuyển đổi String thành Date
+			Date startTime1 = dateFormat.parse("2025-04-07 09:00:00");
+			Date endTime1 = dateFormat.parse("2025-04-07 11:00:00");
+
+			Date startTime2 = dateFormat.parse("2025-04-07 13:00:00");
+			Date endTime2 = dateFormat.parse("2025-04-07 15:00:00");
+
+			MentorAvailability mentorAvailability1 = MentorAvailability.builder()
+					.mentor(mentor1)
+					.year(2025)
+					.build();
+			mentorAvailabilityRepo.save(mentorAvailability1);
+
+			AvailabilitySlot availabilitySlot1 = AvailabilitySlot.builder()
+					.mentorAvailability(mentorAvailability1)
+					.startTime(startTime1)
+					.endTime(endTime1)
+					.isBooked(false)
+					.build();
+			availabilitySlotRepo.save(availabilitySlot1);
+
+			AvailabilitySlot availabilitySlot2 = AvailabilitySlot.builder()
+					.mentorAvailability(mentorAvailability1)
+					.startTime(startTime2)
+					.endTime(endTime2)
+					.isBooked(false)
+					.build();
+			availabilitySlotRepo.save(availabilitySlot2);
 
 			//thêm thông tin meeting
 			Appointment appointment1 = Appointment.builder()
-					.mentor(mentor7)
+					.mentor(mentor1)
 					.student(student1)
 					.date(date)
 					.description("Report instructions")
@@ -439,7 +471,7 @@ public class FPTMentorLinkApplication {
 			appointmentRepo.save(appointment1);
 
 			Appointment appointment2 = Appointment.builder()
-					.mentor(mentor7)
+					.mentor(mentor1)
 					.student(student8)
 					.date(date)
 					.description("Report instructions")

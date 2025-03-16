@@ -3,17 +3,15 @@ package com.example.sap1701_team1.fptmentorlink.service_implementors;
 import com.example.sap1701_team1.fptmentorlink.enums.AppointmentStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.mappers.AppointmentMapper;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.Appointment;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
-import com.example.sap1701_team1.fptmentorlink.models.entity_models.Project;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.AppointmentResponse;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
-import com.example.sap1701_team1.fptmentorlink.repositories.AppointmentRepo;
-import com.example.sap1701_team1.fptmentorlink.repositories.NotificationRepo;
+import com.example.sap1701_team1.fptmentorlink.repositories.*;
 import com.example.sap1701_team1.fptmentorlink.services.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +21,9 @@ public class AppoimentServiceImpl implements AppointmentService {
     private final AppointmentRepo appointmentRepo;
     private final AppointmentMapper appointmentMapper;
     private final NotificationRepo notificationRepo;
+    private final MentorRepo mentorRepo;
+    private final StudentRepo studentRepo;
+    private final AvailabilitySlotRepo availabilitySlotRepo;
 
     //Get all appointment
     @Override
@@ -146,5 +147,70 @@ public class AppoimentServiceImpl implements AppointmentService {
             response.setStatusCode(500);
         }
         return response;
+    }
+
+    @Override
+    public Response requestAppointment(Integer mentorId, String studentId, Date startTime, Date endTime, String description) {
+        try {
+            Optional<Mentor> mentorOpt = mentorRepo.findById(mentorId);
+            if (mentorOpt.isEmpty()) {
+                return Response.builder()
+                        .isSuccess(false)
+                        .message("Mentor not found!")
+                        .statusCode(404)
+                        .build();
+            }
+            Mentor mentor = mentorOpt.get();
+
+            Optional<Student> studentOpt = studentRepo.findById(studentId);
+            if (studentOpt.isEmpty()) {
+                return Response.builder()
+                        .isSuccess(false)
+                        .message("Student not found!")
+                        .statusCode(404)
+                        .build();
+            }
+            Student student = studentOpt.get();
+
+            Optional<AvailabilitySlot> slotOpt = availabilitySlotRepo.findByMentorAvailabilityMentorIdAndStartTimeAndEndTime(
+                    mentorId, startTime, endTime);
+
+            if (slotOpt.isEmpty() || slotOpt.get().isBooked()) {
+                return Response.builder()
+                        .isSuccess(false)
+                        .message("No available slots for this time!")
+                        .statusCode(400)
+                        .build();
+            }
+
+            AvailabilitySlot slot = slotOpt.get();
+            slot.setBooked(true);
+            availabilitySlotRepo.save(slot);
+
+            Appointment appointment = Appointment.builder()
+                    .date(new Date())
+                    .description(description)
+                    .appointmentStatus(AppointmentStatus.PENDING)
+                    .mentor(mentor)
+                    .student(student)
+                    .mentorAvailability(slot.getMentorAvailability())
+                    .build();
+
+            appointment = appointmentRepo.save(appointment);
+
+            return Response.builder()
+                    .isSuccess(true)
+                    .message("Appointment request submitted successfully!")
+                    .statusCode(200)
+                    .result(appointmentMapper.toAppointmentResponse(appointment))
+                    .build();
+
+        } catch (Exception e) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("Error requesting appointment: " + e.getMessage())
+                    .statusCode(500)
+                    .build();
+        }
     }
 }

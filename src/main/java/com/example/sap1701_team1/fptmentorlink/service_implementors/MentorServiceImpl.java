@@ -1,6 +1,7 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
 import com.example.sap1701_team1.fptmentorlink.mappers.MentorMapper;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.AvailabilitySlot;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Mentor;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.MentorAvailability;
 import com.example.sap1701_team1.fptmentorlink.models.request_models.MentorRequest;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -82,13 +84,43 @@ public class MentorServiceImpl implements MentorService {
         }
     }
 
+    @Override
+    public Response getMentorById(Integer mentorId) {
+        try {
+            Optional<Mentor> mentorOpt = mentorRepo.findById(mentorId);
+            if (mentorOpt.isEmpty()) {
+                return Response.builder()
+                        .isSuccess(false)
+                        .message("Mentor not found!")
+                        .statusCode(404)
+                        .build();
+            }
+
+            Mentor mentor = mentorOpt.get();
+            MentorResponse mentorResponse = mentorMapper.toMentorResponse(mentor);
+
+            return Response.builder()
+                    .isSuccess(true)
+                    .message("Mentor details retrieved successfully!")
+                    .statusCode(200)
+                    .result(mentorResponse)
+                    .build();
+        } catch (Exception e) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("Error retrieving mentor: " + e.getMessage())
+                    .statusCode(500)
+                    .build();
+        }
+    }
+
     public Specification<Mentor> getMentorSpecification(MentorRequest request) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (request.getExpertise() != null && !request.getExpertise().isEmpty()) {
                 List<Predicate> expertisePredicates = request.getExpertise().stream()
-                        .map(exp -> criteriaBuilder.like(root.get("expertise"), "%" + exp + "%")) // 🔥 Dùng LIKE để tìm từng giá trị trong List<String>
+                        .map(exp -> criteriaBuilder.like(root.get("expertise"), "%" + exp + "%"))
                         .toList();
                 predicates.add(criteriaBuilder.or(expertisePredicates.toArray(new Predicate[0])));
             }
@@ -97,18 +129,29 @@ public class MentorServiceImpl implements MentorService {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("rating"), request.getMinRating()));
             }
 
-            if (request.getTerm() != null || request.getDayOfWeek() != null) {
+            if (request.getTerm() != null || request.getYear() != null || request.getStartTime() != null || request.getEndTime() != null) {
                 Subquery<Integer> subquery = query.subquery(Integer.class);
                 Root<MentorAvailability> availabilityRoot = subquery.from(MentorAvailability.class);
+                Root<AvailabilitySlot> slotRoot = query.from(AvailabilitySlot.class);
 
                 List<Predicate> subPredicates = new ArrayList<>();
-                subPredicates.add(criteriaBuilder.equal(availabilityRoot.get("mentor"), root)); // Join với Mentor
+                subPredicates.add(criteriaBuilder.equal(availabilityRoot.get("mentor"), root));
 
                 if (request.getTerm() != null) {
                     subPredicates.add(criteriaBuilder.equal(availabilityRoot.get("term"), request.getTerm()));
                 }
-                if (request.getDayOfWeek() != null) {
-                    subPredicates.add(criteriaBuilder.equal(availabilityRoot.get("dayOfWeek"), request.getDayOfWeek()));
+
+                if (request.getYear() != null) {
+                    subPredicates.add(criteriaBuilder.equal(availabilityRoot.get("year"), request.getYear()));
+                }
+
+                if (request.getStartTime() != null && request.getEndTime() != null) {
+                    Predicate slotPredicate = criteriaBuilder.and(
+                            criteriaBuilder.greaterThanOrEqualTo(slotRoot.get("startTime"), request.getStartTime()),
+                            criteriaBuilder.lessThanOrEqualTo(slotRoot.get("endTime"), request.getEndTime()),
+                            criteriaBuilder.isFalse(slotRoot.get("isBooked"))
+                    );
+                    subPredicates.add(slotPredicate);
                 }
 
                 subquery.select(availabilityRoot.get("mentor").get("id"))
@@ -116,6 +159,7 @@ public class MentorServiceImpl implements MentorService {
 
                 predicates.add(criteriaBuilder.exists(subquery));
             }
+
             return predicates.isEmpty() ? criteriaBuilder.conjunction() : criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
