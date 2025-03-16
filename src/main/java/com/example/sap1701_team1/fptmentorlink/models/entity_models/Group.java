@@ -1,7 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink.models.entity_models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +21,7 @@ public class Group {
     private String name;
 
     @OneToOne
-    @JoinColumn(name = "leader_id", unique = true) // Trỏ đến một Student duy nhất
+    @JoinColumn(name = "leader_id", unique = true)
     @JsonIgnore
     private Student leader;
 
