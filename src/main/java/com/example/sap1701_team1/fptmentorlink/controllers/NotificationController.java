@@ -1,16 +1,23 @@
 package com.example.sap1701_team1.fptmentorlink.controllers;
 
-import com.example.sap1701_team1.fptmentorlink.models.request_models.NotificationRequest;
+import com.example.sap1701_team1.fptmentorlink.mappers.NotificationMapper;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
+import com.example.sap1701_team1.fptmentorlink.repositories.NotificationRepo;
 import com.example.sap1701_team1.fptmentorlink.services.NotificationService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/notification")
 @RequiredArgsConstructor
 public class NotificationController {
     private final NotificationService notificationService;
+    private final NotificationRepo notificationRepo;
+    private final NotificationMapper notificationMapper;
 
     //get ALl notification
     @GetMapping("/system/get-all-notification")
@@ -52,5 +59,22 @@ public class NotificationController {
     @PostMapping("/system/send-notifi-report-to-mentor-or-lecturer")
     public Response sendNotificationReportForMentorLecture(Integer reportId, Integer receiverId) {
         return notificationService.sendNotificationReportForMentorLecture(reportId, receiverId);
+    }
+
+    @GetMapping("/get-by-account/{accountId}")
+    public Response getNotificationsByAccount(@PathVariable Integer accountId) {
+        List<Notification> notifications = notificationRepo.findByAccountId(accountId);
+        return Response.builder()
+                .isSuccess(true)
+                .message("Notifications retrieved successfully!")
+                .statusCode(200)
+                .result(notificationMapper.toListResponse(notifications))
+                .build();
+    }
+
+    @GetMapping("/get-mentor-notification")
+    public Response getMentorNotifications(
+            @Parameter(required = true) @RequestParam Integer accountId) {
+        return notificationService.getNotificationsByAccount(accountId);
     }
 }

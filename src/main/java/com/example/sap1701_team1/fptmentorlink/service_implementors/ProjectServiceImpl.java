@@ -6,6 +6,7 @@ import com.example.sap1701_team1.fptmentorlink.mappers.ProjectMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.*;
+import com.example.sap1701_team1.fptmentorlink.services.NotificationService;
 import com.example.sap1701_team1.fptmentorlink.services.ProjectService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final GroupRepo groupRepository;
     private final StudentRepo studentRepository;
     private final LecturerRepo lecturerRepository;
+    private final NotificationService notificationService;
 
     //Get all project
     @Override
@@ -249,6 +251,8 @@ public class ProjectServiceImpl implements ProjectService {
                 .projectStatus(ProjectStatus.PENDING)
                 .build();
         newProject = projectRepo.save(newProject);
+
+        notificationService.sendProjectProposalNotification(newProject);
 
         return Response.builder()
                 .isSuccess(true)

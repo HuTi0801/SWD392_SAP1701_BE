@@ -8,9 +8,11 @@ import com.example.sap1701_team1.fptmentorlink.models.response_models.Appointmen
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.*;
 import com.example.sap1701_team1.fptmentorlink.services.AppointmentService;
+import com.example.sap1701_team1.fptmentorlink.services.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,7 @@ public class AppoimentServiceImpl implements AppointmentService {
     private final MentorRepo mentorRepo;
     private final StudentRepo studentRepo;
     private final AvailabilitySlotRepo availabilitySlotRepo;
+    private final NotificationService notificationService;
 
     //Get all appointment
     @Override
@@ -194,9 +197,12 @@ public class AppoimentServiceImpl implements AppointmentService {
                     .mentor(mentor)
                     .student(student)
                     .mentorAvailability(slot.getMentorAvailability())
+                    .notificationList(new ArrayList<>())
                     .build();
 
             appointment = appointmentRepo.save(appointment);
+
+            notificationService.sendAppointmentRequestNotification(appointment);
 
             return Response.builder()
                     .isSuccess(true)
