@@ -1,5 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
+import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.mappers.MentorMapper;
 import com.example.sap1701_team1.fptmentorlink.mappers.ReportMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
@@ -8,6 +9,7 @@ import com.example.sap1701_team1.fptmentorlink.models.response_models.MentorResp
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.AccountRepo;
 import com.example.sap1701_team1.fptmentorlink.repositories.MentorRepo;
+import com.example.sap1701_team1.fptmentorlink.repositories.NotificationRepo;
 import com.example.sap1701_team1.fptmentorlink.repositories.ReportRepo;
 import com.example.sap1701_team1.fptmentorlink.services.MentorService;
 import jakarta.persistence.criteria.Predicate;
@@ -27,6 +29,7 @@ public class MentorServiceImpl implements MentorService {
     private final ReportMapper reportMapper;
     private final ReportRepo reportRepo;
     private final AccountRepo accountRepo;
+    private final NotificationRepo notificationRepo;
 
     @Override
     public Response getAllMentors() {
@@ -196,6 +199,18 @@ public class MentorServiceImpl implements MentorService {
             report.setFeedback(feedback);
             report.setFeedbackTime(new Date());
             reportRepo.save(report);
+
+
+            // Gửi notification cho student (người tạo report)
+            Account student = report.getAccount();
+            Notification notification = Notification.builder()
+                    .type("Feedback Notification")
+                    .content("Mentor '" + optionalMentor.get().getFullname() + "' has given feedback on your report: '" + report.getTitle() + "'")
+                    .notificationStatus(NotificationStatus.UNREAD)
+                    .account(student)
+                    .report(report)
+                    .build();
+            notificationRepo.save(notification);
 
             response.setMessage("Feedback updated successfully");
             response.setResult(reportMapper.toReportResponse(report));

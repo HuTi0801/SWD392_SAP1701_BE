@@ -33,4 +33,10 @@ public interface NotificationService{
 
     Response sendAppointmentRequestNotification(Appointment appointment);
     Response getNotificationsByAccount(Integer accountId);
+
+    //Gửi thông báo feedback từ mentor đến student
+    Response sendNotificationLectureFeedback(Integer reportId);
+
+    //Gửi thông báo feedback từ lecturer đến student
+    Response sendNotificationMentorFeedback(Integer reportId);
 }
