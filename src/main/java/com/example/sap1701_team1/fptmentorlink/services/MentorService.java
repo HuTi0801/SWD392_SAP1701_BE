@@ -1,5 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink.services;
 
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.Feedback;
 import com.example.sap1701_team1.fptmentorlink.models.request_models.MentorRequest;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 
@@ -10,4 +11,7 @@ public interface MentorService {
 
     //Xem report
     Response getReportDetailForMentor(Integer mentorId, Integer reportId);
+
+    //Feedback report
+    Response updateFeedbackForMentor(Integer mentorId, Integer reportId, String feedback);
 }

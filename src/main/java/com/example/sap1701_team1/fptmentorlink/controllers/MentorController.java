@@ -43,4 +43,9 @@ public class MentorController {
     public Response viewStudentReportToMentor(Integer mentorId, Integer reportId) {
         return mentorService.getReportDetailForMentor(mentorId, reportId);
     }
+
+    @PostMapping("/update-feedback-report")
+    public Response updateMentorFeedbackReport(Integer mentorId, Integer reportId, String feedback) {
+        return mentorService.updateFeedbackForMentor(mentorId, reportId, feedback);
+    }
 }
