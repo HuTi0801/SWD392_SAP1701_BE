@@ -38,4 +38,9 @@ public class MentorController {
     public Response getMentorById(@PathVariable Integer mentorId) {
         return mentorService.getMentorById(mentorId);
     }
+
+    @GetMapping("/view-info-report")
+    public Response viewStudentReportToMentor(Integer mentorId, Integer reportId) {
+        return mentorService.getReportDetailForMentor(mentorId, reportId);
+    }
 }
