@@ -17,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -157,6 +154,57 @@ public class MentorServiceImpl implements MentorService {
         } catch (Exception e) {
             response.setSuccess(false);
             response.setMessage("Error retrieving report: " + e.getMessage());
+            response.setStatusCode(500);
+        }
+        return response;
+    }
+
+    @Override
+    public Response updateFeedbackForMentor(Integer mentorId, Integer reportId, String feedback) {
+        Response response = new Response();
+        try {
+            Optional<Account> optionalMentor = accountRepo.findById(mentorId);
+            if (optionalMentor.isEmpty() || !optionalMentor.get().getRole().name().equals("MENTOR")) {
+                response.setSuccess(false);
+                response.setMessage("Mentor not found or role mismatch!");
+                response.setStatusCode(403);
+                return response;
+            }
+
+            Optional<Report> optionalReport = reportRepo.findById(reportId);
+            if (optionalReport.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("Report not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Report report = optionalReport.get();
+
+            boolean isReceiver = report.getNotificationList()
+                    .stream()
+                    .anyMatch(noti -> noti.getAccount().getId().equals(mentorId));
+
+            if (!isReceiver) {
+                response.setSuccess(false);
+                response.setMessage("You are not authorized to update feedback for this report!");
+                response.setStatusCode(403);
+                return response;
+            }
+
+            // ✅ Cập nhật feedback
+            report.setFeedback(feedback);
+            report.setFeedbackTime(new Date());
+            reportRepo.save(report);
+
+            response.setMessage("Feedback updated successfully");
+            response.setResult(reportMapper.toReportResponse(report));
+            response.setSuccess(true);
+            response.setStatusCode(200);
+
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error updating feedback: " + e.getMessage());
             response.setStatusCode(500);
         }
         return response;
