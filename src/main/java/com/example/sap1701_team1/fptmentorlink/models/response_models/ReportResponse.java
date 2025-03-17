@@ -22,7 +22,7 @@ public class ReportResponse {
     private String feedback;
     private Date feedbackTime;
 
-    private Integer accountId;
+    private Integer accountId; //lấy id trong bảng account
     private String accountName;
 
     private Integer groupId;

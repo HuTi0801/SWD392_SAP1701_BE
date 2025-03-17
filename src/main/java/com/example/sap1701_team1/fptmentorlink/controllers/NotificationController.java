@@ -77,4 +77,16 @@ public class NotificationController {
             @Parameter(required = true) @RequestParam Integer accountId) {
         return notificationService.getNotificationsByAccount(accountId);
     }
+
+    //Gửi thông báo feedback từ mentor đến student
+    @GetMapping("/system/send-notif-feedback-from-mentor-to-student")
+    public Response sendNotificationMentorFeedbackToStudent(Integer reportId) {
+        return notificationService.sendNotificationMentorFeedback(reportId);
+    }
+
+    //Gửi thông báo feedback từ lecturer đến student
+    @GetMapping("/system/send-notif-feedback-from-lecturer-to-student")
+    public Response sendNotificationLecturerFeedbackToStudent(Integer reportId) {
+        return notificationService.sendNotificationLectureFeedback(reportId);
+    }
 }

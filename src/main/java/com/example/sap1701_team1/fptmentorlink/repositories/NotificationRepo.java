@@ -15,4 +15,6 @@ public interface NotificationRepo extends JpaRepository<Notification, Integer> {
     List<Notification> findByProjectId(Integer projectId);
 
     List<Notification> findByAccountId(Integer accountId);
+
+    List<Notification> findByReportIdAndType(Integer projectId, String titleFeedback);
 }

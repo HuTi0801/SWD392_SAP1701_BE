@@ -370,5 +370,119 @@ public class NotificationServiceImpl implements NotificationService {
                 .result(notificationMapper.toListResponse(notifications))
                 .build();
     }
+
+    @Override
+    public Response sendNotificationMentorFeedback(Integer reportId) {
+        Response response = new Response();
+        try {
+            Report report = reportRepo.findById(reportId).orElse(null);
+            if (report == null) {
+                response.setSuccess(false);
+                response.setMessage("Report not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Account student = report.getAccount();
+            if (student == null || student.getRole() != Role.STUDENT) {
+                response.setSuccess(false);
+                response.setMessage("Student account not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Account mentor = report.getNotificationList()
+                    .stream()
+                    .map(Notification::getAccount)
+                    .filter(acc -> acc.getRole() == Role.MENTOR)
+                    .findFirst()
+                    .orElse(null);
+
+            if (mentor == null) {
+                response.setSuccess(false);
+                response.setMessage("Mentor not found for this report!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Notification notification = Notification.builder()
+                    .type("Mentor Feedback Notification")
+                    .content("Mentor '" + mentor.getFullname() + "' has provided feedback for your report: '" + report.getTitle() + "'")
+                    .notificationStatus(NotificationStatus.UNREAD)
+                    .account(student)
+                    .report(report)
+                    .build();
+
+            notificationRepo.save(notification);
+
+            response.setSuccess(true);
+            response.setMessage("Notification sent to student successfully from mentor!");
+            response.setStatusCode(200);
+            response.setResult(notification);
+
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error sending notification: " + e.getMessage());
+            response.setStatusCode(500);
+        }
+        return response;
+    }
+
+    @Override
+    public Response sendNotificationLectureFeedback(Integer reportId) {
+        Response response = new Response();
+        try {
+            Report report = reportRepo.findById(reportId).orElse(null);
+            if (report == null) {
+                response.setSuccess(false);
+                response.setMessage("Report not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Account student = report.getAccount();
+            if (student == null || student.getRole() != Role.STUDENT) {
+                response.setSuccess(false);
+                response.setMessage("Student account not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Account lecturer = report.getNotificationList()
+                    .stream()
+                    .map(Notification::getAccount)
+                    .filter(acc -> acc.getRole() == Role.LECTURE)
+                    .findFirst()
+                    .orElse(null);
+
+            if (lecturer == null) {
+                response.setSuccess(false);
+                response.setMessage("Lecturer not found for this report!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Notification notification = Notification.builder()
+                    .type("Lecturer Feedback Notification")
+                    .content("Lecturer '" + lecturer.getFullname() + "' has provided feedback for your report: '" + report.getTitle() + "'")
+                    .notificationStatus(NotificationStatus.UNREAD)
+                    .account(student)
+                    .report(report)
+                    .build();
+
+            notificationRepo.save(notification);
+
+            response.setSuccess(true);
+            response.setMessage("Notification sent to student successfully from lecturer!");
+            response.setStatusCode(200);
+            response.setResult(notification);
+
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error sending notification: " + e.getMessage());
+            response.setStatusCode(500);
+        }
+        return response;
+    }
 }
 

@@ -1,14 +1,17 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
+import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.mappers.LecturerMapper;
 import com.example.sap1701_team1.fptmentorlink.mappers.ReportMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Account;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Lecturer;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Report;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.LecturerResponse;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.AccountRepo;
 import com.example.sap1701_team1.fptmentorlink.repositories.LecturerRepo;
+import com.example.sap1701_team1.fptmentorlink.repositories.NotificationRepo;
 import com.example.sap1701_team1.fptmentorlink.repositories.ReportRepo;
 import com.example.sap1701_team1.fptmentorlink.services.LecturerService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class LecturerServiceImpl implements LecturerService {
     private final ReportRepo reportRepo;
     private final AccountRepo accountRepo;
     private final ReportMapper reportMapper;
+    private final NotificationRepo notificationRepo;
 
     @Override
     public Response getAllLecturers() {
@@ -140,6 +144,17 @@ public class LecturerServiceImpl implements LecturerService {
             report.setFeedback(feedback);
             report.setFeedbackTime(new Date());
             reportRepo.save(report);
+
+            // Gửi notification cho student (người tạo report)
+            Account student = report.getAccount();
+            Notification notification = Notification.builder()
+                    .type("Feedback Notification")
+                    .content("Lecture '" + optionalLecture.get().getFullname() + "' has given feedback on your report: '" + report.getTitle() + "'")
+                    .notificationStatus(NotificationStatus.UNREAD)
+                    .account(student)
+                    .report(report)
+                    .build();
+            notificationRepo.save(notification);
 
             response.setSuccess(true);
             response.setMessage("Lecture feedback submitted successfully!");
