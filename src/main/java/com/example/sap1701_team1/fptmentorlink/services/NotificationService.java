@@ -1,6 +1,7 @@
 package com.example.sap1701_team1.fptmentorlink.services;
 
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.Project;
 import com.example.sap1701_team1.fptmentorlink.models.request_models.NotificationRequest;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +27,6 @@ public interface NotificationService{
 
     //Send message report to Lecturer - mentor
     Response sendNotificationReportForMentorLecture(Integer reportId, Integer receiverId);
+
+    Response sendProjectProposalNotification(Project project);
 }

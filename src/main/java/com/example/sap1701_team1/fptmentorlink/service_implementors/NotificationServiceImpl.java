@@ -5,7 +5,6 @@ import com.example.sap1701_team1.fptmentorlink.enums.ReportStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import com.example.sap1701_team1.fptmentorlink.mappers.NotificationMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
-import com.example.sap1701_team1.fptmentorlink.models.request_models.NotificationRequest;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.*;
 import com.example.sap1701_team1.fptmentorlink.services.NotificationService;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -303,5 +301,42 @@ public class NotificationServiceImpl implements NotificationService {
         return response;
     }
 
+    @Override
+    public Response sendProjectProposalNotification(Project project) {
+        String content = "New topic proposed: " + project.getTopic() +
+                " from group " + project.getGroup().getName() + " - Pending approval.";
 
+        List<Notification> notifications = new ArrayList<>();
+
+        Notification lecturerNotification = Notification.builder()
+                .type("Project Proposal")
+                .content(content)
+                .notificationStatus(NotificationStatus.UNREAD)
+                .project(project)
+                .group(project.getGroup())
+                .account(project.getLecturer().getAccount())
+                .build();
+        notifications.add(notificationRepo.save(lecturerNotification));
+
+        List<Account> adminAccounts = accountRepo.findByRole(Role.ADMIN);
+        for (Account admin : adminAccounts) {
+            Notification adminNotification = Notification.builder()
+                    .type("Project Proposal")
+                    .content(content)
+                    .notificationStatus(NotificationStatus.UNREAD)
+                    .group(project.getGroup())
+                    .project(project)
+                    .account(admin)
+                    .build();
+            notifications.add(notificationRepo.save(adminNotification));
+        }
+
+        return Response.builder()
+                .isSuccess(true)
+                .message("Project proposal notifications sent successfully!")
+                .statusCode(200)
+                .result(notificationMapper.toListResponse(notifications))
+                .build();
+    }
 }
+

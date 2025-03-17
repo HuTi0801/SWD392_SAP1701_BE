@@ -264,6 +264,16 @@ public class FPTMentorLinkApplication {
 					.is_active(true)
 					.userCode("LE000003")
 					.build();
+			Account account19 = Account.builder()
+					.username("khangpbd")
+					.password("1")
+					.role(Role.ADMIN)
+					.email("khangpbd@gmail.com")
+					.fullname("Phan Ba Dinh Khang")
+					.phone("031xxxxxxx")
+					.is_active(true)
+					.userCode("AD000001")
+					.build();
 			accountRepo.save(account12);
 			accountRepo.save(account13);
 			accountRepo.save(account14);
@@ -271,6 +281,7 @@ public class FPTMentorLinkApplication {
 			accountRepo.save(account16);
 			accountRepo.save(account17);
 			accountRepo.save(account18);
+			accountRepo.save(account19);
 			//thêm thông tin Group
 			Group group1 = Group.builder()
 					.name("3cats")
