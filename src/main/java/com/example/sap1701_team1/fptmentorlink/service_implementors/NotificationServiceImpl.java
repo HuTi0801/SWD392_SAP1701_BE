@@ -338,5 +338,37 @@ public class NotificationServiceImpl implements NotificationService {
                 .result(notificationMapper.toListResponse(notifications))
                 .build();
     }
+
+    @Override
+    public Response sendAppointmentRequestNotification(Appointment appointment) {
+        String content = "You have a new appointment request from student: " + appointment.getStudent().getAccount().getFullname() + " and student code is " + appointment.getStudent().getAccount().getUserCode();
+
+        Notification mentorNotification = Notification.builder()
+                .type("Appointment Request")
+                .content(content)
+                .notificationStatus(NotificationStatus.UNREAD)
+                .appointment(appointment)
+                .account(appointment.getMentor().getAccount())
+                .build();
+        mentorNotification = notificationRepo.save(mentorNotification);
+
+        return Response.builder()
+                .isSuccess(true)
+                .message("Appointment request notification sent to Mentor!")
+                .statusCode(200)
+                .result(notificationMapper.toResponse(mentorNotification))
+                .build();
+    }
+
+    @Override
+    public Response getNotificationsByAccount(Integer accountId) {
+        List<Notification> notifications = notificationRepo.findByAccountId(accountId);
+        return Response.builder()
+                .isSuccess(true)
+                .message("Notifications retrieved successfully!")
+                .statusCode(200)
+                .result(notificationMapper.toListResponse(notifications))
+                .build();
+    }
 }
 

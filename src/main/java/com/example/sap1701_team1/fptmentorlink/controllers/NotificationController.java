@@ -2,10 +2,10 @@ package com.example.sap1701_team1.fptmentorlink.controllers;
 
 import com.example.sap1701_team1.fptmentorlink.mappers.NotificationMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
-import com.example.sap1701_team1.fptmentorlink.models.request_models.NotificationRequest;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.NotificationRepo;
 import com.example.sap1701_team1.fptmentorlink.services.NotificationService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,5 +70,11 @@ public class NotificationController {
                 .statusCode(200)
                 .result(notificationMapper.toListResponse(notifications))
                 .build();
+    }
+
+    @GetMapping("/get-mentor-notification")
+    public Response getMentorNotifications(
+            @Parameter(required = true) @RequestParam Integer accountId) {
+        return notificationService.getNotificationsByAccount(accountId);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink.services;
 
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.Appointment;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Project;
 import com.example.sap1701_team1.fptmentorlink.models.request_models.NotificationRequest;
@@ -29,4 +30,7 @@ public interface NotificationService{
     Response sendNotificationReportForMentorLecture(Integer reportId, Integer receiverId);
 
     Response sendProjectProposalNotification(Project project);
+
+    Response sendAppointmentRequestNotification(Appointment appointment);
+    Response getNotificationsByAccount(Integer accountId);
 }
