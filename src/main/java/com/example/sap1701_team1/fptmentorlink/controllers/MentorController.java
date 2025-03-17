@@ -34,7 +34,7 @@ public class MentorController {
         return mentorService.searchMentors(request);
     }
 
-    @GetMapping("/{mentorId}")
+    @GetMapping("/view_mentor_details/{mentorId}")
     public Response getMentorById(@PathVariable Integer mentorId) {
         return mentorService.getMentorById(mentorId);
     }
