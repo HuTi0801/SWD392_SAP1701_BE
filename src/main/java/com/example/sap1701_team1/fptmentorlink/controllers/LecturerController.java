@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/lecturer")
+@RequestMapping("/auth/v1/lecturer")
 @RequiredArgsConstructor
 public class LecturerController {
     private final LecturerService lecturerService;

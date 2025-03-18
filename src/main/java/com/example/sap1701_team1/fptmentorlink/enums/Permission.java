@@ -3,6 +3,7 @@ package com.example.sap1701_team1.fptmentorlink.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum Permission {
 
@@ -26,6 +27,5 @@ public enum Permission {
     ADMIN_UPDATE("admin:update"),
     ADMIN_DELETE("admin:delete");
 
-    @Getter
     private final String permission;
 }

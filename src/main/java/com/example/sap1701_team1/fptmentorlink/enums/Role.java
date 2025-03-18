@@ -2,13 +2,16 @@ package com.example.sap1701_team1.fptmentorlink.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import static com.example.sap1701_team1.fptmentorlink.enums.Permission.*;
 
 
+@Getter
 @RequiredArgsConstructor
 public enum Role {
     GUEST(Collections.emptySet()),
@@ -45,6 +48,15 @@ public enum Role {
                     MENTOR_DELETE
             )
     );
-    @Getter
     private final Set<Permission> permissions;
+
+    public List<SimpleGrantedAuthority> getAuthorities(){
+        var author = new java.util.ArrayList<>(getPermissions()
+                .stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
+                .toList());
+
+        author.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
+        return author;
+    }
 }

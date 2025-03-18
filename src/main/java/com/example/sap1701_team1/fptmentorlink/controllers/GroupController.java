@@ -5,20 +5,23 @@ import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.services.GroupService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/group")
+@RequestMapping("/auth/v1/group")
 @RequiredArgsConstructor
 public class GroupController {
     private final GroupService groupService;
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('student:create')")
     public Response createGroup(
             @Parameter(required = false) @RequestBody GroupRequest groupRequest) {
         return groupService.createGroup(groupRequest);
     }
 
     @PatchMapping("/add-member")
+    @PreAuthorize("hasAuthority('student:update')")
     public Response addMemberToGroup(@RequestParam Integer groupId,
                                      @RequestParam String memberUserCode,
                                      @RequestParam String requesterUserCode) {
@@ -26,6 +29,7 @@ public class GroupController {
     }
 
     @PatchMapping("/remove-member")
+    @PreAuthorize("hasAuthority('student:delete')")
     public Response removeMemberFromGroup(@RequestParam Integer groupId,
                                           @RequestParam String memberUserCode,
                                           @RequestParam String requesterUserCode,

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/report")
+@RequestMapping("/auth/v1/report")
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;

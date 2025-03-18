@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/project")
+@RequestMapping("/auth/v1/project")
 @RequiredArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;

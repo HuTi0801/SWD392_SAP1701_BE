@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/mentor")
+@RequestMapping("/auth/v1/mentor")
 @RequiredArgsConstructor
 public class MentorController {
     private final MentorService mentorService;
