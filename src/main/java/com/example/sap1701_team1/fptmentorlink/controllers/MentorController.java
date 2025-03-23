@@ -16,6 +16,11 @@ import java.util.List;
 public class MentorController {
     private final MentorService mentorService;
 
+    @GetMapping("/get-all")
+    public Response getAllMentors(){
+        return mentorService.getAllMentors();
+    }
+
     @GetMapping("/search")
     public Response searchMentors(
             @Parameter @RequestParam(required = false) List<String> expertise,

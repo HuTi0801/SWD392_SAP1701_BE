@@ -20,6 +20,11 @@ public class LecturerController {
         return lecturerService.getReportDetailForLecture(lecturerId, reportId);
     }
 
+    @GetMapping("/get-all")
+    public Response getAllLecture(){
+        return lecturerService.getAllLecturers();
+    }
+
     //Update feedback cho report
     @PostMapping("/update-feedback-report")
     public Response updateLecturerFeedbackReport(Integer lecturerId, Integer reportId, String feedback) {
