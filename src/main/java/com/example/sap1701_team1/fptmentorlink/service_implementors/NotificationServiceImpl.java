@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -274,19 +275,8 @@ public class NotificationServiceImpl implements NotificationService {
                 return response;
             }
 
-            // Gửi notification
-            Notification notification = Notification.builder()
-                    .type("New Report Notification")
-                    .content("Sender: '" + sender.getFullname()
-                            + "' has sent the report '" + report.getTitle()
-                            + "' to '" + receiver.getFullname()
-                            + "' - Reason: " + reportStatus.name())
-                    .notificationStatus(NotificationStatus.UNREAD)
-                    .account(receiver)
-                    .report(report)
-                    .build();
-
-            notificationRepo.save(notification);
+            // Lấy danh sách thông báo liên quan đến report
+            List<Notification> notification = notificationRepo.findByReportId(reportId);
 
             response.setSuccess(true);
             response.setMessage("Notification sent successfully!");
@@ -296,6 +286,40 @@ public class NotificationServiceImpl implements NotificationService {
         } catch (Exception e) {
             response.setSuccess(false);
             response.setMessage("Error sending notification: " + e.getMessage());
+            response.setStatusCode(500);
+        }
+        return response;
+    }
+
+    @Override
+    public Response updateStautsNotification(Integer notificationId) {
+        Response response = new Response();
+        try {
+            Optional<Notification> optionalNotification = notificationRepo.findById(notificationId);
+
+            if (optionalNotification.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("Notification not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Notification notification = optionalNotification.get();
+
+            // Cập nhật status
+            notification.setNotificationStatus(NotificationStatus.READ);
+
+            // Lưu lại
+            notificationRepo.save(notification);
+
+            response.setSuccess(true);
+            response.setMessage("Notification status updated to READ successfully!");
+            response.setStatusCode(200);
+            response.setResult(notificationMapper.toResponse(notification));
+
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error updating notification status: " + e.getMessage());
             response.setStatusCode(500);
         }
         return response;
@@ -405,15 +429,8 @@ public class NotificationServiceImpl implements NotificationService {
                 return response;
             }
 
-            Notification notification = Notification.builder()
-                    .type("Mentor Feedback Notification")
-                    .content("Mentor '" + mentor.getFullname() + "' has provided feedback for your report: '" + report.getTitle() + "'")
-                    .notificationStatus(NotificationStatus.UNREAD)
-                    .account(student)
-                    .report(report)
-                    .build();
-
-            notificationRepo.save(notification);
+            // Lấy danh sách thông báo liên quan đến report
+            List<Notification> notification = notificationRepo.findByReportId(reportId);
 
             response.setSuccess(true);
             response.setMessage("Notification sent to student successfully from mentor!");
@@ -462,20 +479,13 @@ public class NotificationServiceImpl implements NotificationService {
                 return response;
             }
 
-            Notification notification = Notification.builder()
-                    .type("Lecturer Feedback Notification")
-                    .content("Lecturer '" + lecturer.getFullname() + "' has provided feedback for your report: '" + report.getTitle() + "'")
-                    .notificationStatus(NotificationStatus.UNREAD)
-                    .account(student)
-                    .report(report)
-                    .build();
+            // Lấy danh sách thông báo liên quan đến report
+            List<Notification> notifications = notificationRepo.findByReportId(reportId);
 
-            notificationRepo.save(notification);
-
-            response.setSuccess(true);
-            response.setMessage("Notification sent to student successfully from lecturer!");
-            response.setStatusCode(200);
-            response.setResult(notification);
+                response.setSuccess(true);
+                response.setMessage("Notification sent to student successfully from lecturer!");
+                response.setStatusCode(200);
+                response.setResult(notifications);
 
         } catch (Exception e) {
             response.setSuccess(false);

@@ -150,6 +150,31 @@ public class ReportServiceImpl implements ReportService {
         return response;
     }
 
+    @Override
+    public Response getAllReport() {
+        Response response = new Response();
+        try {
+            List<Report> reports = reportRepo.findAll();
+            if (reports.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("No report found!");
+                response.setStatusCode(404);
+                response.setResult(null);
+            } else {
+                response.setSuccess(true);
+                response.setMessage("Report retrieved successfully!");
+                response.setStatusCode(200);
+                response.setResult(reportMapper.toListReportResponse(reports));
+            }
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error retrieving reports: " + e.getMessage());
+            response.setStatusCode(500);
+            response.setResult(null);
+        }
+        return response;
+    }
+
     // Hàm build response lỗi
     private Response buildErrorResponse(String message, int statusCode) {
         Response response = new Response();
