@@ -7,4 +7,6 @@ public interface GroupService {
     Response createGroup(GroupRequest groupRequest);
     Response addMemberToGroup(Integer groupId, String memberUserCode, String requesterUserCode);
     Response removeMemberFromGroup(Integer groupId, String memberUserCode, String requesterUserCode, String newLeaderUserCode);
+
+    Response getGroupAndProjectInfo(Integer userId);
 }

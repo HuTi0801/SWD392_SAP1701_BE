@@ -1,19 +1,21 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
+import com.example.sap1701_team1.fptmentorlink.mappers.CheckpointMapper;
 import com.example.sap1701_team1.fptmentorlink.mappers.GroupMapper;
+import com.example.sap1701_team1.fptmentorlink.mappers.ProjectMapper;
+import com.example.sap1701_team1.fptmentorlink.mappers.ReportMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Group;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Project;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Student;
 import com.example.sap1701_team1.fptmentorlink.models.request_models.GroupRequest;
-import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
-import com.example.sap1701_team1.fptmentorlink.repositories.GroupRepo;
-import com.example.sap1701_team1.fptmentorlink.repositories.ProjectRepo;
-import com.example.sap1701_team1.fptmentorlink.repositories.StudentRepo;
+import com.example.sap1701_team1.fptmentorlink.models.response_models.*;
+import com.example.sap1701_team1.fptmentorlink.repositories.*;
 import com.example.sap1701_team1.fptmentorlink.services.GroupService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +28,8 @@ public class GroupServiceImpl implements GroupService {
     private final StudentRepo studentRepository;
     private final GroupMapper groupMapper;
     private final ProjectRepo projectRepository;
+    private final CheckpointRepo checkpointRepository;
+    private final ProjectMapper projectMapper;
 
     @Override
     public Response createGroup(GroupRequest groupRequest) {
@@ -265,6 +269,40 @@ public class GroupServiceImpl implements GroupService {
 
         return Response.builder().isSuccess(true)
                 .message("Member removed successfully!")
+                .statusCode(200)
+                .build();
+    }
+
+    @Override
+    public Response getGroupAndProjectInfo(Integer userId) {
+        Optional<Student> optionalStudent = studentRepository.findByAccountId(userId);
+        if (optionalStudent.isEmpty()) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("No students found")
+                    .statusCode(404)
+                    .build();
+        }
+
+        Student student = optionalStudent.get();
+        Group group = student.getGroup();
+        if (group == null) {
+            return Response.builder()
+                    .isSuccess(false)
+                    .message("Student does not belong to any group.")
+                    .statusCode(404)
+                    .build();
+        }
+        Project project = projectRepository.findByGroupId(group.getId()).orElse(null);
+        ProjectResponse projectResponse = (project != null) ? projectMapper.toProjectResponse(project) : null;
+        GroupResponse groupResponse = groupMapper.toGroupResponse(group);
+        Map<String, Object> result = new HashMap<>();
+        result.put("group", groupResponse);
+        result.put("project", projectResponse);
+        return Response.builder()
+                .result(result)
+                .isSuccess(true)
+                .message("Successful!")
                 .statusCode(200)
                 .build();
     }

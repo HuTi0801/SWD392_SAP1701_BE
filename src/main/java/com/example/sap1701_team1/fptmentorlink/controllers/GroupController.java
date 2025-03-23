@@ -5,6 +5,7 @@ import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.services.GroupService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +36,11 @@ public class GroupController {
                                           @RequestParam String requesterUserCode,
                                           @RequestParam String newLeaderUserCode) {
         return groupService.removeMemberFromGroup(groupId, memberUserCode, requesterUserCode, newLeaderUserCode);
+    }
+
+    @GetMapping("/get-group-information-by/{accountId}")
+    public ResponseEntity<Response> getGroupAndProject(@PathVariable Integer accountId) {
+        Response response = groupService.getGroupAndProjectInfo(accountId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 }

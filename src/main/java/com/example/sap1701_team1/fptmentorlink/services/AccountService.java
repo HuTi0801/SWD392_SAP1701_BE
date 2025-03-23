@@ -5,6 +5,5 @@ import org.springframework.security.core.AuthenticationException;
 
 public interface AccountService {
     Response login(String username, String password) throws AuthenticationException;
-
     Response logout(String token);
 }

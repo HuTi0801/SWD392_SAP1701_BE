@@ -26,4 +26,7 @@ public interface StudentRepo extends JpaRepository<Student, String> {
     List<Student> findByGroupId(Integer groupId);
 
     Optional<Student> findById(String id);
+
+    @Query("SELECT s FROM Student s JOIN FETCH s.group g WHERE s.account.id = :accountId")
+    Optional<Student> findByAccountId(@Param("accountId") Integer accountId);
 }

@@ -195,13 +195,11 @@ public class MentorServiceImpl implements MentorService {
                 return response;
             }
 
-            // ✅ Cập nhật feedback
             report.setFeedback(feedback);
             report.setFeedbackTime(new Date());
             reportRepo.save(report);
 
 
-            // Gửi notification cho student (người tạo report)
             Account student = report.getAccount();
             Notification notification = Notification.builder()
                     .type("Feedback Notification")
