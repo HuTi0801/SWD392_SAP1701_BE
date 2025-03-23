@@ -6,4 +6,6 @@ public interface ReportService {
     //Create report
     Response createReport(String studentId, Integer groupId, Integer projectId, Integer receiverId, String receiverType, String title, String content);
 
+    //Get all report
+    Response getAllReport();
 }

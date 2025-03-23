@@ -2,10 +2,7 @@ package com.example.sap1701_team1.fptmentorlink.controllers;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.services.ReportService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth/v1/report")
@@ -22,5 +19,11 @@ public class ReportController {
                                  @RequestParam String title,
                                  @RequestParam String content) {
         return reportService.createReport(studentId, groupId, projectId, receiverId, receiverType, title, content);
+    }
+
+    //Get all report
+    @GetMapping("get-all-report")
+    public Response getAllReport() {
+        return reportService.getAllReport();
     }
 }
