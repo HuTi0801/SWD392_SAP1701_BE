@@ -77,42 +77,6 @@ public class NotificationServiceImpl implements NotificationService {
         return response;
     }
 
-    //Gửi thông báo Project đến student
-    @Override
-    public Response sendNotificationToStudent(String studentId) {
-        Response response = new Response();
-        try {
-            Student student = studentRepo.findById(studentId)
-                    .orElseThrow(() -> new RuntimeException("Student not found"));
-
-            Group group = student.getGroup();
-            if (group == null) {
-                response.setSuccess(false);
-                response.setMessage("Student is not in any group!");
-                response.setStatusCode(404);
-                return response;
-            }
-
-            List<Notification> notifications = notificationRepo.findByGroupId(group.getId());
-            if (notifications.isEmpty()) {
-                response.setSuccess(false);
-                response.setMessage("No notifications found for this student's group!");
-                response.setStatusCode(404);
-                return response;
-            }
-
-            response.setSuccess(true);
-            response.setMessage("Notifications retrieved successfully!");
-            response.setStatusCode(200);
-            response.setResult(notifications);
-        } catch (Exception e) {
-            response.setSuccess(false);
-            response.setMessage("Error retrieving notifications: " + e.getMessage());
-            response.setStatusCode(500);
-        }
-        return response;
-    }
-
     //Gửi thông báo appointment đến student
     @Override
     public Response sendNotificationAppointment(String studentId, Integer appointmentId) {
