@@ -184,6 +184,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .notificationStatus(NotificationStatus.UNREAD)
                     .project(project)
                     .group(project.getGroup())
+                    .account(project.getLecturer().getAccount())
                     .build();
 
             notificationRepo.save(notification); // Lưu thông báo vào DB

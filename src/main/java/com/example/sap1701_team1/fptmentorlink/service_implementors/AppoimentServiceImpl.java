@@ -134,6 +134,7 @@ public class AppoimentServiceImpl implements AppointmentService {
                     .content(notificationContent)
                     .notificationStatus(NotificationStatus.UNREAD) // Mặc định chưa đọc
                     .appointment(appointment1) // Liên kết với appointment
+                    .account(appointment1.getMentor().getAccount())
                     .build();
 
             notificationRepo.save(notification);
