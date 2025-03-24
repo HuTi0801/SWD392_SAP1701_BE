@@ -30,4 +30,10 @@ public class LecturerController {
     public Response updateLecturerFeedbackReport(Integer lecturerId, Integer reportId, String feedback) {
         return lecturerService.updateFeedbackForLecture(lecturerId, reportId, feedback);
     }
+
+    //Xem được tất cả report của lecturer
+    @GetMapping("/view-all-report-of-lecture")
+    public Response viewAllLecturerReportOfLecture(Integer lecturerId) {
+        return lecturerService.getAllReportsForLecture(lecturerId);
+    }
 }

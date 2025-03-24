@@ -8,6 +8,7 @@ import com.example.sap1701_team1.fptmentorlink.models.entity_models.Lecturer;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Notification;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Report;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.LecturerResponse;
+import com.example.sap1701_team1.fptmentorlink.models.response_models.ReportResponse;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.AccountRepo;
 import com.example.sap1701_team1.fptmentorlink.repositories.LecturerRepo;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -102,6 +104,51 @@ public class LecturerServiceImpl implements LecturerService {
                 response.setMessage("Error retrieving report detail: " + e.getMessage());
             }
             return response;
+    }
+
+    @Override
+    public Response getAllReportsForLecture(Integer lectureId) {
+        Response response = new Response();
+        try {
+            Optional<Account> optionalLecture = accountRepo.findById(lectureId);
+
+            if (optionalLecture.isEmpty() || !optionalLecture.get().getRole().name().equalsIgnoreCase("LECTURE")) {
+                response.setStatusCode(404);
+                response.setSuccess(false);
+                response.setMessage("Lecture not found!");
+                return response;
+            }
+
+            // Lọc report mà lecture nhận notification
+            List<Report> reports = reportRepo.findAll()
+                    .stream()
+                    .filter(report -> report.getNotificationList()
+                            .stream()
+                            .anyMatch(notification -> notification.getAccount().getId().equals(lectureId))
+                    ).collect(Collectors.toList());
+
+            if (reports.isEmpty()) {
+                response.setStatusCode(404);
+                response.setSuccess(false);
+                response.setMessage("No reports found for this lecture!");
+                return response;
+            }
+
+            // Convert list sang ReportResponse
+            List<ReportResponse> reportResponses = reports.stream()
+                    .map(reportMapper::toReportResponse)
+                    .collect(Collectors.toList());
+
+            response.setStatusCode(200);
+            response.setSuccess(true);
+            response.setMessage("Get all reports successfully!");
+            response.setResult(reportResponses);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setSuccess(false);
+            response.setMessage("Error retrieving reports: " + e.getMessage());
+        }
+        return response;
     }
 
     @Override

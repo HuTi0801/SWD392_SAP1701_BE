@@ -21,9 +21,4 @@ public class ReportController {
         return reportService.createReport(studentId, groupId, projectId, receiverId, receiverType, title, content);
     }
 
-    //Get all report
-    @GetMapping("get-all-report")
-    public Response getAllReport() {
-        return reportService.getAllReport();
-    }
 }

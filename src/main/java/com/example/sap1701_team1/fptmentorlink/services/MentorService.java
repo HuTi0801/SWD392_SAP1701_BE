@@ -12,6 +12,9 @@ public interface MentorService {
     //Xem report
     Response getReportDetailForMentor(Integer mentorId, Integer reportId);
 
+    //Xem tất cả report của mentor
+    Response getAllReportsForMentor(Integer mentorId);
+
     //Feedback report
     Response updateFeedbackForMentor(Integer mentorId, Integer reportId, String feedback);
 }
