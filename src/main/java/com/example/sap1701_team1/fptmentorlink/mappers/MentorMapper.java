@@ -1,5 +1,6 @@
 package com.example.sap1701_team1.fptmentorlink.mappers;
 
+import com.example.sap1701_team1.fptmentorlink.models.entity_models.Account;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Mentor;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.MentorAvailability;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.MentorResponse;
@@ -39,4 +40,26 @@ public class MentorMapper {
                 .findFirst()
                 .orElse(0);
     }
+
+    //Lấy mentor từ bảng account
+    public MentorResponse toResponseFromAccount(Account account) {
+        if (account == null) return null;
+
+        return MentorResponse.builder()
+                .id(account.getId())
+                .fullName(account.getFullname())
+                .email(account.getEmail())
+                .expertise(List.of("N/A")) // Vì Account không có expertise
+                .rating(0) // Vì Account không có rating
+                .year(0) // Vì Account không có year
+                .availableTimes(List.of()) // Vì Account không có availableTimes
+                .build();
+    }
+
+    public List<MentorResponse> toResponseListFromAccounts(List<Account> accounts) {
+        return accounts.stream()
+                .map(this::toResponseFromAccount)
+                .collect(Collectors.toList());
+    }
+
 }

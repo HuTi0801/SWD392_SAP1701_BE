@@ -1,6 +1,7 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
+import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import com.example.sap1701_team1.fptmentorlink.mappers.LecturerMapper;
 import com.example.sap1701_team1.fptmentorlink.mappers.ReportMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.Account;
@@ -211,6 +212,35 @@ public class LecturerServiceImpl implements LecturerService {
         } catch (Exception e) {
             response.setSuccess(false);
             response.setMessage("Error submitting feedback: " + e.getMessage());
+            response.setStatusCode(500);
+        }
+        return response;
+    }
+
+    @Override
+    public Response getAllLectureInTableAccount() {
+        Response response = new Response();
+        try {
+            // Lấy tất cả account có role là LECTURE
+            List<Account> lectures = accountRepo.findByRole(Role.LECTURE);
+
+            if (lectures.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("No lecturers found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            // Dùng mapper chuẩn đã tạo
+            List<LecturerResponse> lecturerResponses = lecturerMapper.toResponseListFromAccounts(lectures);
+
+            response.setSuccess(true);
+            response.setMessage("Lecturers retrieved successfully!");
+            response.setStatusCode(200);
+            response.setResult(lecturerResponses);
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error retrieving lecturers: " + e.getMessage());
             response.setStatusCode(500);
         }
         return response;

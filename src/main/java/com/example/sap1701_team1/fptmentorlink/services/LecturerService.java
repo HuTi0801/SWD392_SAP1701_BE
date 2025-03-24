@@ -7,4 +7,7 @@ public interface LecturerService {
     Response getReportDetailForLecture(Integer lectureId, Integer reportId);
     Response getAllReportsForLecture(Integer lectureId);
     Response updateFeedbackForLecture(Integer lectureId, Integer reportId, String feedback);
+
+    //Get all lecture từ bảng account
+    Response getAllLectureInTableAccount();
 }
