@@ -4,6 +4,7 @@ import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.ReportStatus;
 import com.example.sap1701_team1.fptmentorlink.mappers.ReportMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
+import com.example.sap1701_team1.fptmentorlink.models.response_models.ReportResponse;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.*;
 import com.example.sap1701_team1.fptmentorlink.services.ReportService;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -146,31 +148,6 @@ public class ReportServiceImpl implements ReportService {
             response.setSuccess(false);
             response.setMessage("Error submitting report: " + e.getMessage());
             response.setStatusCode(500);
-        }
-        return response;
-    }
-
-    @Override
-    public Response getAllReport() {
-        Response response = new Response();
-        try {
-            List<Report> reports = reportRepo.findAll();
-            if (reports.isEmpty()) {
-                response.setSuccess(false);
-                response.setMessage("No report found!");
-                response.setStatusCode(404);
-                response.setResult(null);
-            } else {
-                response.setSuccess(true);
-                response.setMessage("Report retrieved successfully!");
-                response.setStatusCode(200);
-                response.setResult(reportMapper.toListReportResponse(reports));
-            }
-        } catch (Exception e) {
-            response.setSuccess(false);
-            response.setMessage("Error retrieving reports: " + e.getMessage());
-            response.setStatusCode(500);
-            response.setResult(null);
         }
         return response;
     }

@@ -49,6 +49,11 @@ public class MentorController {
         return mentorService.getReportDetailForMentor(mentorId, reportId);
     }
 
+    @GetMapping("/view-all-report-of-mentor")
+    public Response viewAllReportOfMentor(Integer mentorId) {
+        return mentorService.getAllReportsForMentor(mentorId);
+    }
+
     @PostMapping("/update-feedback-report")
     public Response updateMentorFeedbackReport(Integer mentorId, Integer reportId, String feedback) {
         return mentorService.updateFeedbackForMentor(mentorId, reportId, feedback);
