@@ -11,9 +11,6 @@ public interface NotificationService{
     //Send message Project to Group
     Response sendNotificationProjectToGroup(Integer groupId);
 
-    //Send message to student
-    Response sendNotificationToStudent(String studentId);
-
     //Send messgae Appointment to student
     Response sendNotificationAppointment(String studentId, Integer appointmentId);
 
