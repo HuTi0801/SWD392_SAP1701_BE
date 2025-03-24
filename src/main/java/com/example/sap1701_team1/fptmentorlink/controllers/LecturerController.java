@@ -20,7 +20,7 @@ public class LecturerController {
         return lecturerService.getReportDetailForLecture(lecturerId, reportId);
     }
 
-    @GetMapping("/get-all")
+    @GetMapping("/get-all-lecture-from-lecturer-table")
     public Response getAllLecture(){
         return lecturerService.getAllLecturers();
     }
@@ -29,5 +29,17 @@ public class LecturerController {
     @PostMapping("/update-feedback-report")
     public Response updateLecturerFeedbackReport(Integer lecturerId, Integer reportId, String feedback) {
         return lecturerService.updateFeedbackForLecture(lecturerId, reportId, feedback);
+    }
+
+    //Xem được tất cả report của lecturer
+    @GetMapping("/view-all-report-of-lecture")
+    public Response viewAllLecturerReportOfLecture(Integer lecturerId) {
+        return lecturerService.getAllReportsForLecture(lecturerId);
+    }
+
+    //Lấy toaàn bộ account Lecture từ bảng Account
+    @GetMapping("/get-all-lecture-from-account-table")
+    public Response getAllLectureFromAccountTable() {
+        return lecturerService.getAllLectureInTableAccount();
     }
 }

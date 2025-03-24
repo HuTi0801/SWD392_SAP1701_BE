@@ -1,11 +1,13 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
+import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import com.example.sap1701_team1.fptmentorlink.mappers.MentorMapper;
 import com.example.sap1701_team1.fptmentorlink.mappers.ReportMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
 import com.example.sap1701_team1.fptmentorlink.models.request_models.MentorRequest;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.MentorResponse;
+import com.example.sap1701_team1.fptmentorlink.models.response_models.ReportResponse;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.AccountRepo;
 import com.example.sap1701_team1.fptmentorlink.repositories.MentorRepo;
@@ -20,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +55,35 @@ public class MentorServiceImpl implements MentorService {
             response.setStatusCode(500);
             response.setSuccess(false);
             response.setMessage("Error retrieving mentors: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public Response getAllMentorFromAccountTable() {
+        Response response = new Response();
+        try {
+            // Lấy tất cả Account có role = MENTOR
+            List<Account> mentors = accountRepo.findByRole(Role.MENTOR);
+
+            if (mentors.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("No mentors found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            // Map sang DTO đơn giản
+            List<MentorResponse> mentorResponses = mentorMapper.toResponseListFromAccounts(mentors);
+
+            response.setSuccess(true);
+            response.setMessage("Mentors retrieved successfully!");
+            response.setStatusCode(200);
+            response.setResult(mentorResponses);
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error retrieving mentors: " + e.getMessage());
+            response.setStatusCode(500);
         }
         return response;
     }
@@ -157,6 +189,50 @@ public class MentorServiceImpl implements MentorService {
         } catch (Exception e) {
             response.setSuccess(false);
             response.setMessage("Error retrieving report: " + e.getMessage());
+            response.setStatusCode(500);
+        }
+        return response;
+    }
+
+    @Override
+    public Response getAllReportsForMentor(Integer mentorId) {
+        Response response = new Response();
+        try {
+            Optional<Account> optionalMentor = accountRepo.findById(mentorId);
+            if (optionalMentor.isEmpty() || !optionalMentor.get().getRole().name().equals("MENTOR")) {
+                response.setSuccess(false);
+                response.setMessage("Mentor not found or role mismatch!");
+                response.setStatusCode(403);
+                return response;
+            }
+
+            // Lấy tất cả các report mà mentor này là người nhận notification
+            List<Report> reports = reportRepo.findAll()
+                    .stream()
+                    .filter(report -> report.getNotificationList()
+                            .stream()
+                            .anyMatch(noti -> noti.getAccount().getId().equals(mentorId))
+                    ).collect(Collectors.toList());
+
+            if (reports.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("No reports found for this mentor!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            // Convert sang ReportResponse
+            List<ReportResponse> reportResponses = reports.stream()
+                    .map(reportMapper::toReportResponse)
+                    .collect(Collectors.toList());
+
+            response.setMessage("Reports fetched successfully");
+            response.setResult(reportResponses);
+            response.setSuccess(true);
+            response.setStatusCode(200);
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error retrieving reports: " + e.getMessage());
             response.setStatusCode(500);
         }
         return response;

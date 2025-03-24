@@ -21,9 +21,15 @@ import java.util.List;
 public class MentorController {
     private final MentorService mentorService;
 
-    @GetMapping("/get-all")
+    @GetMapping("/get-all-mentor-from-mentor-table")
     public Response getAllMentors(){
         return mentorService.getAllMentors();
+    }
+
+    //get mentor from account table
+    @GetMapping("/get-all-mentor-from-account-table")
+    public Response getAllMentorsFromAccount(){
+        return mentorService.getAllMentorFromAccountTable();
     }
 
     @GetMapping("/search")
@@ -68,6 +74,11 @@ public class MentorController {
     @GetMapping("/view-info-report")
     public Response viewStudentReportToMentor(Integer mentorId, Integer reportId) {
         return mentorService.getReportDetailForMentor(mentorId, reportId);
+    }
+
+    @GetMapping("/view-all-report-of-mentor")
+    public Response viewAllReportOfMentor(Integer mentorId) {
+        return mentorService.getAllReportsForMentor(mentorId);
     }
 
     @PostMapping("/update-feedback-report")

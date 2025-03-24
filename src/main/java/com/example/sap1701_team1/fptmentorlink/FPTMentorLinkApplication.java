@@ -279,6 +279,26 @@ public class FPTMentorLinkApplication {
 						.is_active(true)
 						.userCode("AD000001")
 						.build();
+				Account account20 = Account.builder()
+						.username("hoantm")
+						.password(passwordEncoder.encode("12345"))
+						.role(Role.MENTOR)
+						.email("hoantm@gmail.com")
+						.fullname("Nguyen Thi My Hoa")
+						.phone("0998******")
+						.is_active(true)
+						.userCode("ME000002")
+						.build();
+				Account account21 = Account.builder()
+						.username("mypnn")
+						.password(passwordEncoder.encode("12345"))
+						.role(Role.MENTOR)
+						.email("mypnn@gmail.com")
+						.fullname("Phung Nguyen Ngoc My")
+						.phone("099*******")
+						.is_active(true)
+						.userCode("ME000003")
+						.build();
 				accountRepo.save(account12);
 				accountRepo.save(account13);
 				accountRepo.save(account14);
@@ -287,6 +307,9 @@ public class FPTMentorLinkApplication {
 				accountRepo.save(account17);
 				accountRepo.save(account18);
 				accountRepo.save(account19);
+				accountRepo.save(account20);
+				accountRepo.save(account21);
+
 				//thêm thông tin Group
 				Group group1 = Group.builder()
 						.name("3cats")
@@ -443,7 +466,19 @@ public class FPTMentorLinkApplication {
 						.expertise(List.of("BA", "Project Management", "Agile"))
 						.rating(5)
 						.build();
+				Mentor mentor2 = Mentor.builder()
+						.account(account20)
+						.expertise(List.of("DA", "Project Management", "Agile"))
+						.rating(5)
+						.build();
+				Mentor mentor3 = Mentor.builder()
+						.account(account21)
+						.expertise(List.of("BA", "Project Management", "Agile"))
+						.rating(5)
+						.build();
 				mentorRepo.save(mentor1);
+				mentorRepo.save(mentor2);
+				mentorRepo.save(mentor3);
 
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
