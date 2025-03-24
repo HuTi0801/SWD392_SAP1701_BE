@@ -17,7 +17,6 @@ public class MentorMapper {
     }
 
     public MentorResponse toMentorResponse(Mentor mentor) {
-
         return MentorResponse.builder()
                 .id(mentor.getId())
                 .fullName(mentor.getAccount().getFullname())
@@ -26,9 +25,8 @@ public class MentorMapper {
                 .rating(mentor.getRating())
                 .year(getYearsFromMentorAvailability(mentor))
                 .availableTimes(mentor.getMentorAvailabilityList().stream()
-                        .flatMap(availability -> availability.getAvailabilitySlots().stream()
-                                .filter(slot -> !slot.isBooked())
-                                .map(slot -> slot.getStartTime() + " - " + slot.getEndTime()))
+                        .filter(availability -> !availability.isBooked())
+                        .map(availability -> availability.getStartTime() + " - " + availability.getEndTime())
                         .collect(Collectors.toList()))
                 .build();
     }

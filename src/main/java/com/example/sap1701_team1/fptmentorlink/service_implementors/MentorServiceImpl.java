@@ -238,29 +238,23 @@ public class MentorServiceImpl implements MentorService {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("rating"), request.getMinRating()));
             }
 
-            if (request.getTerm() != null || request.getYear() != null || request.getStartTime() != null || request.getEndTime() != null) {
+            if (request.getYear() != null || request.getStartTime() != null || request.getEndTime() != null) {
                 Subquery<Integer> subquery = query.subquery(Integer.class);
                 Root<MentorAvailability> availabilityRoot = subquery.from(MentorAvailability.class);
-                Root<AvailabilitySlot> slotRoot = query.from(AvailabilitySlot.class);
 
                 List<Predicate> subPredicates = new ArrayList<>();
                 subPredicates.add(criteriaBuilder.equal(availabilityRoot.get("mentor"), root));
-
-                if (request.getTerm() != null) {
-                    subPredicates.add(criteriaBuilder.equal(availabilityRoot.get("term"), request.getTerm()));
-                }
 
                 if (request.getYear() != null) {
                     subPredicates.add(criteriaBuilder.equal(availabilityRoot.get("year"), request.getYear()));
                 }
 
                 if (request.getStartTime() != null && request.getEndTime() != null) {
-                    Predicate slotPredicate = criteriaBuilder.and(
-                            criteriaBuilder.greaterThanOrEqualTo(slotRoot.get("startTime"), request.getStartTime()),
-                            criteriaBuilder.lessThanOrEqualTo(slotRoot.get("endTime"), request.getEndTime()),
-                            criteriaBuilder.isFalse(slotRoot.get("isBooked"))
-                    );
-                    subPredicates.add(slotPredicate);
+                    subPredicates.add(criteriaBuilder.and(
+                            criteriaBuilder.greaterThanOrEqualTo(availabilityRoot.get("startTime"), request.getStartTime()),
+                            criteriaBuilder.lessThanOrEqualTo(availabilityRoot.get("endTime"), request.getEndTime()),
+                            criteriaBuilder.isFalse(availabilityRoot.get("isBooked"))
+                    ));
                 }
 
                 subquery.select(availabilityRoot.get("mentor").get("id"))

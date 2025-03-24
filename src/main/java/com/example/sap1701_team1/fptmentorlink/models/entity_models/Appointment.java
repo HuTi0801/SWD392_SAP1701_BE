@@ -11,21 +11,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Entity
+@Table(name = "`appointment`")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "`appointment`")
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private Date date;
-
     private String description;
-
     private String rejectionReason;
 
     @Column(name = "status")
@@ -33,17 +30,18 @@ public class Appointment {
     private AppointmentStatus appointmentStatus;
 
     @ManyToOne
-    @JoinColumn(name = "mentor_id")
+    @JoinColumn(name = "mentor_id", nullable = false)
     private Mentor mentor;
 
     @OneToOne
-    @JoinColumn(name = "mentor_availability_id")
+    @JoinColumn(name = "mentor_availability_id", unique = true)
     private MentorAvailability mentorAvailability;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
-    @OneToMany(mappedBy = "appointment")
-    private List<Notification> notificationList;
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Notification> notificationList = new ArrayList<>();
 }
+
