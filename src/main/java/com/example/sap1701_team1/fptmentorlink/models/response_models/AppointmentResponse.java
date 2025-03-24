@@ -20,6 +20,6 @@ public class AppointmentResponse {
     private String appointmentStatus;
     private String mentorName;
     private String studentName;
-    private Integer studentId;
+    private String userCode;
     private List<NotificationResponse> recentNotifications;
 }

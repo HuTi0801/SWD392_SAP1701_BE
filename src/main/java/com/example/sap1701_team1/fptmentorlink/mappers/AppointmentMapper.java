@@ -23,7 +23,7 @@ public class AppointmentMapper {
                 .appointmentStatus(appointment.getAppointmentStatus().name())
                 .mentorName(appointment.getMentor() != null ? appointment.getMentor().getAccount().getFullname() : "No mentor")
                 .studentName(appointment.getStudent() != null ? appointment.getStudent().getAccount().getFullname() : "No student")
-                .studentId(appointment.getStudent() != null ? appointment.getStudent().getAccount().getId() : null)
+                .userCode(appointment.getStudent() != null ? appointment.getStudent().getAccount().getUserCode() : "No student")
                 .recentNotifications(
                         appointment.getNotificationList().stream()
                                 .sorted(Comparator.comparing(Notification::getId).reversed()) // Lấy thông báo mới nhất trước
