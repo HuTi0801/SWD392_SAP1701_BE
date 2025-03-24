@@ -1,6 +1,7 @@
 package com.example.sap1701_team1.fptmentorlink.service_implementors;
 
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
+import com.example.sap1701_team1.fptmentorlink.enums.Role;
 import com.example.sap1701_team1.fptmentorlink.mappers.MentorMapper;
 import com.example.sap1701_team1.fptmentorlink.mappers.ReportMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
@@ -54,6 +55,35 @@ public class MentorServiceImpl implements MentorService {
             response.setStatusCode(500);
             response.setSuccess(false);
             response.setMessage("Error retrieving mentors: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public Response getAllMentorFromAccountTable() {
+        Response response = new Response();
+        try {
+            // Lấy tất cả Account có role = MENTOR
+            List<Account> mentors = accountRepo.findByRole(Role.MENTOR);
+
+            if (mentors.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("No mentors found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            // Map sang DTO đơn giản
+            List<MentorResponse> mentorResponses = mentorMapper.toResponseListFromAccounts(mentors);
+
+            response.setSuccess(true);
+            response.setMessage("Mentors retrieved successfully!");
+            response.setStatusCode(200);
+            response.setResult(mentorResponses);
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Error retrieving mentors: " + e.getMessage());
+            response.setStatusCode(500);
         }
         return response;
     }
