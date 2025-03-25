@@ -31,6 +31,12 @@ public class NotificationController {
         return notificationService.sendNotificationProjectToGroup(groupId);
     }
 
+    // Gửi thông báo project đến từng student trong group
+    @PostMapping("/system/send-notifi-project-to-student")
+    public Response sendNotificationsToStudent(String userCode) {
+        return notificationService.sendNotificationToStudent(userCode);
+    }
+
     //Gửi thông báo cuộc hẹn đến student
     @PostMapping("/system/send-notifi-appointment-to-student")
     public Response sendNotificationAppointment(@RequestParam Integer appointmentId, @RequestParam String studentId) {
