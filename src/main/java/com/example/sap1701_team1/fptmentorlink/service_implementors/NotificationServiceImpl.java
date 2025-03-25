@@ -3,17 +3,17 @@ package com.example.sap1701_team1.fptmentorlink.service_implementors;
 import com.example.sap1701_team1.fptmentorlink.enums.NotificationStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.ReportStatus;
 import com.example.sap1701_team1.fptmentorlink.enums.Role;
+import com.example.sap1701_team1.fptmentorlink.mappers.GroupMapper;
 import com.example.sap1701_team1.fptmentorlink.mappers.NotificationMapper;
 import com.example.sap1701_team1.fptmentorlink.models.entity_models.*;
+import com.example.sap1701_team1.fptmentorlink.models.response_models.GroupResponse;
 import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.repositories.*;
 import com.example.sap1701_team1.fptmentorlink.services.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +25,8 @@ public class NotificationServiceImpl implements NotificationService {
     private final ProjectRepo projectRepo;
     private final ReportRepo reportRepo;
     private final AccountRepo accountRepo;
+    private final GroupRepo groupRepo;
+    private final GroupMapper groupMapper;
 
     @Override
     public Response getAllNotifications() {
@@ -56,6 +58,7 @@ public class NotificationServiceImpl implements NotificationService {
     public Response sendNotificationProjectToGroup(Integer groupId) {
         Response response = new Response();
         try {
+            // Lấy danh sách thông báo của group
             List<Notification> notifications = notificationRepo.findByGroupId(groupId);
 
             if (notifications.isEmpty()) {
@@ -65,13 +68,30 @@ public class NotificationServiceImpl implements NotificationService {
                 return response;
             }
 
+            // Lấy thông tin Group
+            Optional<Group> optionalGroup = groupRepo.findById(groupId);
+            if (optionalGroup.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("Group not found!");
+                response.setStatusCode(404);
+                return response;
+            }
+
+            Group group = optionalGroup.get();
+            GroupResponse groupResponse = groupMapper.toGroupResponse(group);
+
+            // Tạo response chứa cả thông báo lẫn danh sách student
+            Map<String, Object> result = new HashMap<>();
+            result.put("notifications", notifications);
+            result.put("groupInfo", groupResponse);
+
             response.setSuccess(true);
-            response.setMessage("Notifications retrieved successfully!");
+            response.setMessage("Notifications and group info retrieved successfully!");
             response.setStatusCode(200);
-            response.setResult(notifications);
+            response.setResult(result);
         } catch (Exception e) {
             response.setSuccess(false);
-            response.setMessage("Error retrieving notifications: " + e.getMessage());
+            response.setMessage("Error retrieving notifications and group info: " + e.getMessage());
             response.setStatusCode(500);
         }
         return response;
