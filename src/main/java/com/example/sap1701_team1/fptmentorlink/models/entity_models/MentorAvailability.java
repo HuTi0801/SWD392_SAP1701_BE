@@ -9,20 +9,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Entity
+@Table(name = "`mentor_availability`")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "`mentor_availability`")
 public class MentorAvailability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private int year;
+    private Date startTime;
+    private Date endTime;
+    private boolean isBooked;
+
     @ManyToOne
-    @JoinColumn(name = "mentor_id")
+    @JoinColumn(name = "mentor_id", nullable = false)
     private Mentor mentor;
-    @OneToMany(mappedBy = "mentorAvailability", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AvailabilitySlot> availabilitySlots = new ArrayList<>();
 }
+

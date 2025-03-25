@@ -31,9 +31,10 @@ public class FPTMentorLinkApplication {
 	private final DepartmentRepo departmentRepo;
 	private final ProjectRepo projectRepo;
 	private final GroupRepo groupRepo;
+	private final CheckpointRepo checkpointRepo;
 	private final MentorAvailabilityRepo mentorAvailabilityRepo;
-	private final AvailabilitySlotRepo availabilitySlotRepo;
 	private final PasswordEncoder passwordEncoder;
+	private final CheckpointReviewRepo checkpointReviewRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(FPTMentorLinkApplication.class, args);
@@ -42,7 +43,8 @@ public class FPTMentorLinkApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date = sdf.parse("2024-02-27 14:30:00");
+//		Date date = sdf.parse("2024-02-27 14:30:00");
+		Date date = new Date();
 		return args ->
 			{
 				//Thêm thông tin department
@@ -487,35 +489,55 @@ public class FPTMentorLinkApplication {
 				Date startTime2 = dateFormat.parse("2025-04-07 13:00:00");
 				Date endTime2 = dateFormat.parse("2025-04-07 15:00:00");
 
+				Date startTime3 = dateFormat.parse("2025-04-07 17:00:00");
+				Date endTime3 = dateFormat.parse("2025-04-07 19:00:00");
+
+				Date startTime4 = dateFormat.parse("2025-04-07 19:00:00");
+				Date endTime4 = dateFormat.parse("2025-04-07 21:00:00");
+
 				MentorAvailability mentorAvailability1 = MentorAvailability.builder()
 						.mentor(mentor1)
 						.year(2025)
+						.startTime(startTime1)
+						.endTime(endTime1)
+						.isBooked(true)
 						.build();
 				mentorAvailabilityRepo.save(mentorAvailability1);
 
-				AvailabilitySlot availabilitySlot1 = AvailabilitySlot.builder()
-						.mentorAvailability(mentorAvailability1)
-						.startTime(startTime1)
-						.endTime(endTime1)
-						.isBooked(false)
-						.build();
-				availabilitySlotRepo.save(availabilitySlot1);
-
-				AvailabilitySlot availabilitySlot2 = AvailabilitySlot.builder()
-						.mentorAvailability(mentorAvailability1)
+				MentorAvailability mentorAvailability2 = MentorAvailability.builder()
+						.mentor(mentor1)
+						.year(2025)
 						.startTime(startTime2)
 						.endTime(endTime2)
+						.isBooked(true)
+						.build();
+				mentorAvailabilityRepo.save(mentorAvailability2);
+
+				MentorAvailability mentorAvailability3 = MentorAvailability.builder()
+						.mentor(mentor1)
+						.year(2025)
+						.startTime(startTime3)
+						.endTime(endTime3)
 						.isBooked(false)
 						.build();
-				availabilitySlotRepo.save(availabilitySlot2);
+				mentorAvailabilityRepo.save(mentorAvailability3);
 
-				//thêm thông tin meeting
+				MentorAvailability mentorAvailability4 = MentorAvailability.builder()
+						.mentor(mentor1)
+						.year(2025)
+						.startTime(startTime4)
+						.endTime(endTime4)
+						.isBooked(false)
+						.build();
+				mentorAvailabilityRepo.save(mentorAvailability4);
+
 				Appointment appointment1 = Appointment.builder()
 						.mentor(mentor1)
 						.student(student1)
 						.date(date)
 						.description("Report instructions")
 						.appointmentStatus(AppointmentStatus.PENDING)
+						.mentorAvailability(mentorAvailability1)
 						.build();
 				appointmentRepo.save(appointment1);
 
@@ -525,10 +547,10 @@ public class FPTMentorLinkApplication {
 						.date(date)
 						.description("Report instructions")
 						.appointmentStatus(AppointmentStatus.PENDING)
+						.mentorAvailability(mentorAvailability2)
 						.build();
 				appointmentRepo.save(appointment2);
 
-				//thêm thông tin Project
 				Project project1 = Project.builder()
 						.lecturer(lecturer6)
 						.group(group1)
@@ -547,9 +569,77 @@ public class FPTMentorLinkApplication {
 						.description("Our pet care website connects owners with vet services, grooming, training, " +
 								"and a loving community for happier, healthier pets.")
 						.document("doc22.com.vn")
-						.projectStatus(ProjectStatus.PENDING)
+						.projectStatus(ProjectStatus.IN_PROGRESS)
 						.build();
 				projectRepo.save(project2);
+
+				Checkpoint cp1_1 = Checkpoint.builder()
+						.project(project1)
+						.cpName("Checkpoint 1")
+						.deadline("2025-03-07")
+						.document("https://docs.google.com/document/d/1txZgWcG8Aj1bqYdfGoBumDNXua68nUtR/edit?usp=sharing&ouid=107505895634068400897&rtpof=true&sd=true")
+						.build();
+
+				Checkpoint cp1_2 = Checkpoint.builder()
+						.project(project1)
+						.cpName("Checkpoint 2")
+						.deadline("2025-04-07")
+						.build();
+
+				Checkpoint cp1_3 = Checkpoint.builder()
+						.project(project1)
+						.cpName("Checkpoint 3")
+						.deadline("2025-05-07")
+						.build();
+
+				Checkpoint cp1_4 = Checkpoint.builder()
+						.project(project1)
+						.cpName("Checkpoint 4")
+						.deadline("2025-06-07")
+						.build();
+
+				Checkpoint cp2_1 = Checkpoint.builder()
+						.project(project1)
+						.cpName("Checkpoint 1")
+						.deadline("2025-05-07")
+						.build();
+
+				Checkpoint cp2_2 = Checkpoint.builder()
+						.project(project1)
+						.cpName("Checkpoint 2")
+						.deadline("2025-06-07")
+						.build();
+
+				Checkpoint cp2_3 = Checkpoint.builder()
+						.project(project1)
+						.cpName("Checkpoint 3")
+						.deadline("2025-06-07")
+						.build();
+
+				Checkpoint cp2_4 = Checkpoint.builder()
+						.project(project1)
+						.cpName("Checkpoint 4")
+						.deadline("2025-07-07")
+						.build();
+				checkpointRepo.save(cp1_1);
+				checkpointRepo.save(cp1_2);
+				checkpointRepo.save(cp1_3);
+				checkpointRepo.save(cp1_4);
+				checkpointRepo.save(cp2_1);
+				checkpointRepo.save(cp2_2);
+				checkpointRepo.save(cp2_3);
+				checkpointRepo.save(cp2_4);
+
+				Date review_at_1 = dateFormat.parse("2025-04-07 09:00:00");
+
+				CheckpointReview checkpointReview1_1 = CheckpointReview.builder()
+						.checkpoint(cp1_1)
+						.lecturer(lecturer6)
+						.score(9F)
+						.reviewedAt(review_at_1)
+						.feedback("Good structure")
+						.build();
+				checkpointReviewRepo.save(checkpointReview1_1);
 		};
 	}
 }

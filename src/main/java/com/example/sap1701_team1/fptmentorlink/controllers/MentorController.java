@@ -5,7 +5,12 @@ import com.example.sap1701_team1.fptmentorlink.models.response_models.Response;
 import com.example.sap1701_team1.fptmentorlink.services.MentorService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -32,8 +37,23 @@ public class MentorController {
             @Parameter @RequestParam(required = false) List<String> expertise,
             @Parameter @RequestParam(required = false) Integer minRating,
             @Parameter @RequestParam(required = false) Integer year,
-            @Parameter @RequestParam(required = false) Date startTime,
-            @Parameter @RequestParam(required = false) Date endTime) {
+            @Parameter @RequestParam(required = false) String startTimeStr,
+            @Parameter @RequestParam(required = false) String endTimeStr) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startTime = null;
+        Date endTime = null;
+
+        try {
+            if (startTimeStr != null) {
+                startTime = formatter.parse(startTimeStr);
+            }
+            if (endTimeStr != null) {
+                endTime = formatter.parse(endTimeStr);
+            }
+        } catch (ParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format. Use yyyy-MM-dd HH:mm:ss");
+        }
 
         MentorRequest request = MentorRequest.builder()
                 .expertise(expertise)
@@ -42,6 +62,7 @@ public class MentorController {
                 .startTime(startTime)
                 .endTime(endTime)
                 .build();
+
         return mentorService.searchMentors(request);
     }
 
